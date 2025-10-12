@@ -15,7 +15,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: 
+              $ref: '#/components/schemas/AlbumCreateRequest'
         required: true
       responses:
         '201':
@@ -23,13 +23,100 @@ paths:
           content:
             application/json:
               schema:
-                $ref:
+                $ref: '#/components/schemas/AlbumResponse'
         '404':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref:
+                $ref: '#/components/schemas/ErrorResponse'
+  /album/{id}:
+    get:
+      summary: Find album by ID
+      operationId: getAlbumById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlbumResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Update a album by ID
+      operationId: updateAlbumById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlbumUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlbumResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a album by ID
+      operationId: deleteAlbumById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     Category:
@@ -45,3 +132,53 @@ components:
             - sports
       required:
         - name
+    ReleaseDate:
+      type: string
+      format: date
+    Anniversary:
+      type: integer
+    AlbumResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        category:
+          $ref: '#/components/schemas/Category'
+        anniversary:
+          $ref: '#/components/schemas/Anniversary'
+        releaseDate:
+          $ref: '#/components/schemas/ReleaseDate'
+      required:
+        - id
+        - title
+        - category
+        - annversary
+        - releaseDate
+    AlbumUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        category:
+          $ref: '#/components/schemas/Category'
+    AlbumCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        category:
+          $ref: '#/components/schemas/Category'
+        releaseDate:
+          $ref: '#/components/schemas/ReleaseDate'
+      required:
+        - title
+        - category
+        - releaseDate
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    
