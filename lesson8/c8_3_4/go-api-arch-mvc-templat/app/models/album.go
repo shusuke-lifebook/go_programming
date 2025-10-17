@@ -63,3 +63,24 @@ func GetAlbum(ID int) (*Album, error) {
 	}
 	return &album, nil
 }
+
+func (a *Album) Save() error {
+	category, err := GetOrCreateCategory(a.Category.Name)
+	if err != nil {
+		return err
+	}
+	a.Category = category
+	a.CategoryID = category.ID
+
+	if err := DB.Save(&a).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *Album) Delete() error {
+	if err := DB.Where("id = ?", &a.ID).Delete(&a).Error; err != nil {
+		return err
+	}
+	return nil
+}
