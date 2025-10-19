@@ -30,3 +30,13 @@ func (a *AlbumHandler) CreateAlbum(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, createdAlbum)
 }
+
+func (a *AlbumHandler) GetAlbumById(c *gin.Context, ID int) {
+	album, err := models.GetAlbum(ID)
+	if err != nil {
+		logger.Error(err.Error())
+		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, album)
+}
