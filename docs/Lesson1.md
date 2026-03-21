@@ -159,6 +159,46 @@
     - var を使う場合、関数の外で定義することが可能
     - 短縮変数宣言は関数の中でしか使えない
 
+### 1-2-2 constを使って定数を宣言しよう
+- 不変変数(定数)は**const**を使って宣言する。
+- 定数は関数内でも定義できるが、基本的には関数外で定義します。
+- 定数Piは名前の頭文字が大文字ですが、他のファイルから呼び出される場合には大文字にする
+- varと同じく、const()で複数の定数を定義することができる。
+
+  ```go
+  package main
+
+  import "fmt"
+
+  const Pi = 3.14
+
+  const (
+    Username = "test_user"
+    Password = "test_pass"
+  )
+
+  func main() {
+    fmt.Println(Pi, Username, Password)
+  }
+
+  ```
+- **constとオーバーフロー**
+  - constの上限値を超える値を扱うときの説明
+  - constにはオーバーフローが発生するようなコードを書いても問題ない
+    ```go
+    package main
+
+    import "fmt"
+
+    // var big int = 9223372036854775807
+    // var big int = 9223372036854775807 + 1
+    const big = 9223372036854775807 + 1
+
+    func main() {
+      fmt.Println(big - 1)
+    }
+    ```
+
 ## 1-3 データ型について学ぼう
 
 ## 1-4 データ構造のしくみを学ぼう
