@@ -200,6 +200,78 @@
     ```
 
 ## 1-3 データ型について学ぼう
+- データ型とは、コードで扱うデータの種類のこと。
+- 数値はint型、浮動小数点はfloat型、文字列はstring型、真偽値はbool型
+- Goには他にもさまざまなデータ型が用意されている
+
+### 1-3-1 数値型の基本を知ろう
+- **数値型**
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    var (
+      u8  uint8     = 255
+      i8  int8      = 127
+      f32 float32   = 0.2
+      c64 complex64 = -5 + 12i
+    )
+    fmt.Println(u8, i8, f32, c64)
+  }
+
+  ```
+- **演算子を使った数値の操作**
+  - 数値は、+,-などの**算術演算子**を使った式で計算を行える。
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      fmt.Println("1 + 1 =", 1+1)
+      fmt.Println("10 - 1 =", 10-1)
+      fmt.Println("10 / 2 =", 10/2)
+      fmt.Println("10 / 3 =", 10/3)
+      fmt.Println("10.0 / 3 =", 10.0/3)
+      fmt.Println("10 / 3.0=", 10/3.0)
+      fmt.Println("10 % 2 =", 10%2)
+      fmt.Println("10 % 3 =", 10%3)
+    }
+    ```
+
+  - 次に「++」を使った**インクリメント**と、「--」を使った**デクリメント**
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      x := 0
+      fmt.Println(x)
+      x++
+      fmt.Println(x)
+      x--
+      fmt.Println(x)
+    }
+
+    ```
+  - **シフト演算子**
+    - 2進数で表した値を左右にシフト移動して行う計算のこと「<<」「>>」を使う。
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      fmt.Println(1 << 0)
+      fmt.Println(1 << 1)
+      fmt.Println(1 << 2)
+      fmt.Println(1 << 3)
+    }
+
+    ```
 
 ## 1-4 データ構造のしくみを学ぼう
 
