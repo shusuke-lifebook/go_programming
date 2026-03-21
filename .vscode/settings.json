@@ -1,0 +1,69 @@
+{
+  // --- Go 言語設定 (gopls) ---
+  "go.useLanguageServer": true,
+  "gopls": {
+    "usePlaceholders": true,
+    "staticcheck": true,
+    "analyses": {
+      "unusedparams": true,
+      "shadow": true,
+      "nilness": true
+    }
+  },
+
+  // --- フォーマット & インポート整理 ---
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "go.formatTool": "gofmt",
+  "go.formatFlags": [],
+  "go.toolsManagement.autoUpdate": true,
+
+  // goimports / gci を併用したい場合（任意）
+  // "go.formatTool": "goimports",
+  // "go.alternateTools": {
+  //   "goimports": "gci"
+  // },
+
+  // --- ファイル関連 ---
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/vendor": true,
+    "**/.cache": true,
+    "**/go.sum": false,
+    "**/go.work.sum": false
+  },
+  "files.eol": "\n",
+  "files.encoding": "utf8",
+
+  // --- ターミナル設定 (WSL2 Ubuntu) ---
+  "terminal.integrated.env.linux": {
+    "GO111MODULE": "on",
+    "PATH": "${env:HOME}/.local/share/mise/shims:${env:PATH}"
+  },
+
+  // --- VSCode UI カスタマイズ ---
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.colorTheme": "Monokai",
+
+  // --- git の設定 ---
+  "git.autofetch": true,
+  "git.autofetchPeriod": 180,
+
+  // --- Markdown 専用設定 ---
+  "[markdown]": {
+    "editor.insertSpaces": true,
+    "editor.inlineSuggest.enabled": false,
+    "editor.tabSize": 2,
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "other": false,
+      "comments": false,
+      "strings": false
+    },
+    "editor.renderWhitespace": "boundary",
+    "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+  }
+}

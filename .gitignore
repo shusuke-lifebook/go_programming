@@ -1,0 +1,65 @@
+# --- Go build artifacts ---
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# --- Go coverage & profiling ---
+coverage.out
+*.cover
+*.cov
+*.prof
+*.pprof
+
+# --- Go module cache (not in repo) ---
+/pkg/mod/
+/pkg/sumdb/
+
+# --- Go workspace files ---
+go.work
+go.work.sum
+
+# --- Vendor directory (if not vendoring intentionally) ---
+vendor/
+
+# --- Logs ---
+*.log
+
+# --- Temporary files ---
+*.tmp
+*.temp
+
+# --- OS-specific files ---
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- VSCode ---
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# --- JetBrains (GoLand) ---
+.idea/
+
+# --- mise ---
+.mise/
+.local/share/mise/logs/
+
+# --- Test cache ---
+/testdata/**/tmp/
+
+# --- Misc ---
+*.swp
+*.swo
