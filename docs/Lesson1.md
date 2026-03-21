@@ -273,6 +273,89 @@
 
     ```
 
+### 1-3-2 文字列型の基本をしろう
+- **"(ダブルクォート)** や **`(バッククォート)**で囲んだ部分は文字列として扱われる
+- 文字列を+でつなげると、文字列の連結を行う
+
+- **文字列から指定した文字を取得する**
+  - 文字列は1文字目から順番に**インデックス**という順番を表す番号が0から振られる。
+  - "Hello World"[0]でインデックスが0の「H」を取得できる
+  - Goの場合はASCIIコードで出力される。文字として出力する場合、string()を使った型変換が必要
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      fmt.Println("Hello World"[0]) // ASCIIコードで出力
+      fmt.Println(string("Hello World"[0]))
+    }
+
+    ```
+
+- **文字列型の変数宣言**
+  - 文字列型は**string型**です。string型の変数は次のように宣言する
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      var s string = "Hello World"
+      fmt.Println(s)
+    }
+
+    ```
+- **文字列の置き換え**
+  - 文字列操作のための便利な処理(関数)が纏められたstringsパッケージをインポートして、**strings.Replace**関数を使う
+
+    ```go
+    package main
+
+    import (
+      "fmt"
+      "strings"
+    )
+
+    func main() {
+      var s string = "Hello World"
+      fmt.Println(s)
+      s = strings.Replace(s, "H", "X", 1)
+      fmt.Println(s)
+    }
+
+    ```
+    
+  - stringsパッケージには、他にも指定した文字列を探す**strings.Contain**関数がある。
+    ```go
+    package main
+
+    import (
+      "fmt"
+      "strings"
+    )
+
+    func main() {
+      var s string = "Hello World"
+      fmt.Println(s)
+      fmt.Println(strings.Contains(s, "World"))
+    }
+
+    ```
+- 文字列の改行
+  - 文字列の途中で改行を入れる場合は「\n」を入れる
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      fmt.Println("Hello\nWorld")
+    }
+
+    ```
+
+
 ## 1-4 データ構造のしくみを学ぼう
 
 ## 1-5 関数で処理をまとめよう
