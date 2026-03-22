@@ -411,5 +411,79 @@
     ```
 
 ## 1-4 データ構造のしくみを学ぼう
+- Goには配列(Array)とスライス(Slice)というデータ型がある
+  - 配列は固定長
+  - スライスは可変長
+- マップ(Map)というデータ構造もある
+
+#### 1-4-1 配列(Array)の基本を学ぼう
+- 配列もvarを利用して宣言する。「配列名 [要素数]データ型」という形で配列の要素数とデータ型を指定する
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    var a [2]int
+    a[0] = 100
+    a[1] = 200
+    fmt.Println(a)
+  }
+
+  ```
+- 配列の宣言ともに値を代入することも可能。宣言時に値を入れる場合は、{}に,(カンマ)で値を区切って入れる。
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    a := [2]int{100, 200}
+    fmt.Println(a)
+  }
+
+  ```
+
+#### 1-4-2 スライス(Slice)の基本を学ぼう
+- スライスを宣言するには、配列と同じであるが、[]に要素数を指定しないで空とする。
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    n := []int{1, 2, 3, 4, 5}
+    fmt.Println(n)
+  }
+
+  ```
+- **要素を出力する**
+  - **配列[インデックス]**と言った形で要素を取得することが可能
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      n := []int{1, 2, 3, 4, 5}
+      fmt.Println(n[2])
+    }
+
+    ```
+  - **配列[開始値:終了値]**という書き方で、取得するは要素の範囲を指定することができる。
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      n := []int{1, 2, 3, 4, 5}
+      fmt.Println(n[2:4])
+      fmt.Println(n[:2])
+      fmt.Println(n[2:])
+      fmt.Println(n[:])
+    }
+
+    ```
 
 ## 1-5 関数で処理をまとめよう
