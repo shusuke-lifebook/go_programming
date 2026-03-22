@@ -621,3 +621,42 @@
     ```
 
 ## 1-5 関数で処理をまとめよう
+- 関数とは、ひとまとまりの処理に名前をつけ、何度も呼び出せるようにしたものです。
+- fmt.Println関数のようにGoに用意された組み込み関数の他に、独自の関数を定義することができる。
+
+### 1-5-1 関数の基本をしろう
+- 関数を定義するには**func**を使う。
+- 以下の例では、引数と戻り値のないadd関数を定義。定義した関数は関数名()で呼び出すことができる。
+  ```go
+  package main
+
+  import "fmt"
+
+  func add() {
+    fmt.Println("add function")
+  }
+
+  func main() {
+    add()
+  }
+
+  ```
+
+- **引数を受け取る関数の定義**
+  - **引数**とは、関数の呼び出す際に関数に渡す値のこと
+  - 関数名のあと()ないに引数の名前とデータ型を入れる
+    ```go
+    package main
+
+    import "fmt"
+
+    func add(x int, y int) {
+      fmt.Println("add function")
+      fmt.Println(x + y)
+    }
+
+    func main() {
+      add(10, 20)
+    }
+
+    ```
