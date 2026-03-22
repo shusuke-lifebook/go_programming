@@ -376,6 +376,40 @@
     - 左右のどちらかがtrueであればtrueを出力、どちらもfalseであればfalseを出力する
   - **!演算子(否定)**は、値を反転した結果を出力する
 
+### 1-3-4 データ型を変換してみよう
+- **数値のcast**
+  - データ型を変換する**cast**ともいう。
+  - int型の変数を定義し、**float64**に変換する例
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      var x int = 1
+      xx := float64(x)
+      fmt.Printf("%T %v %f\n", xx, xx, xx)
+    }
+
+    ```
+- **文字列のcast**
+  - string型をint型に変換した場合、**strconv.Atoi関数を使う**
+    ```go
+    package main
+
+    import (
+      "fmt"
+      "strconv"
+    )
+
+    func main() {
+      var s string = "14"
+      i, _ := strconv.Atoi(s)
+      fmt.Printf("%T %v", i, i)
+    }
+
+    ```
+
 ## 1-4 データ構造のしくみを学ぼう
 
 ## 1-5 関数で処理をまとめよう
