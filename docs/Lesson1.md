@@ -485,5 +485,91 @@
     }
 
     ```
+  - **要素の追加**
+    - **append関数**を使うことでスライスの要素数をあとから増やせる。
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      n := []int{1, 2, 3, 4, 5}
+      fmt.Println(n)
+      n = append(n, 100)
+      fmt.Println(n)
+      n = append(n, 200, 300, 400)
+      fmt.Println(n)
+    }
+
+    ```
+  - **多次元スライス**
+    - スライスの中にスライスを入れることができる。[][]データ型{...}と宣言時に[][]2つ書きます。
+    - スライスの中からスライスを取り出すには、スライス[インデックス][インデックス]という形で2つのスライスに対してインデックスを指定する
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      var board = [][]int{
+        []int{0, 1, 2},
+        []int{3, 4, 5},
+        []int{6, 7, 8},
+      }
+      fmt.Println(board)
+      fmt.Println(board[1])
+      fmt.Println(board[1][2])
+    }
+
+    ```
+
+#### 1-4-3 make関数でスライスを作ろう
+- **make**関数を使うと、要素の値が0で初期化されたスライスを作成することが可能
+- 「n := make([]int, 3, 5)」でint型で長さ(length)3、容量(capacity)が5のスライス定義し変数nに代入する
+- スライスの長さはlen関数、容量はcap関数で確認できる。
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    n := make([]int, 3, 5)
+    fmt.Printf("len=%d cap=%d value=%v", len(n), cap(n), n)
+  }
+
+  ```
+- **長さ0のスライス**
+  - 長さ0のスライスはmake関数を使う方法と使わない方法の2つのやり方で作成できる
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      b := make([]int, 0)
+      var c []int
+      fmt.Printf("len=%d cap=%d value=%v\n", len(b), cap(b), b)
+      fmt.Printf("len=%d cap=%d value=%v\n", len(c), cap(c), c)
+    }
+
+    ```
+
+#### 1-4-4 バイト配列を知ろう
+- 要素がbyte型のスライスは、「[]byte{値1, 値2,...}」でbyte型の要素を持つスライスを定義できる
+- 要素がbyte型のスライスはや配列は、**バイト配列**とも呼べれる。
+  - 要素の値はASCIIコードとして扱える
+  - string()関数でcastすると文字列が得られる。
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      b := []byte{72, 73}
+      fmt.Println(b)
+      fmt.Println(string(b))
+    }
+
+    ```
 
 ## 1-5 関数で処理をまとめよう
