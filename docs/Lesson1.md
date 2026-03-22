@@ -660,3 +660,191 @@
     }
 
     ```
+- **返り値を返す関数の定義**
+  - **返り値**とは、関数が返す値のことです。**戻り値**と呼ばれることもある。
+  - 引数の()の後に戻り値のデータ型を指定し、**return**で値を呼び出し元に渡す。
+    ```go
+    package main
+
+    import "fmt"
+
+    func add(x int, y int) int {
+      return x + y
+    }
+
+    func main() {
+      r := add(10, 20)
+      fmt.Println(r)
+    }
+
+    ```
+  - 戻り値を2つ返したい場合、返り値のデータ型を,(カンマ)で区切って、()で囲む。
+  - return でも返り値を2つ書く。
+    ```go
+    package main
+
+    import "fmt"
+
+    func add(x, y int) (int, int) {
+      return x + y, x - y
+    }
+
+    func main() {
+      r1, r2 := add(10, 20)
+      fmt.Println(r1, r2)
+    }
+
+    ```
+
+- **Named return values**
+  - **Named return values**とは返り値に名前をつけることです。
+  - 返り値のデータ型を指定するさいに名前を指定することで、変数名の定義のような働きになる。
+  - **返り値に名前をつけるときの注意点**
+    - 返り値に名前を付けた場合、返り値と同じ名前の変数を関数内で宣言するとエラーとなる。
+    ```go
+    package main
+
+    import "fmt"
+
+    func cal(price, item int) (result int) {
+      result = price * item
+      return result
+    }
+
+    func main() {
+      r := cal(100, 2)
+      fmt.Println(r)
+    }
+
+    ```
+
+- **関数リテラル**
+  - 関数は変数に入れることが可能。変数に代入した関数は変数名()で呼び出すことができる。
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      f := func(x int) {
+        fmt.Println("inner func", x)
+      }
+      f(1)
+    }
+
+    ```
+  - 上記のような名前の関数は**関数リテラル**と呼び、他のプログラム言語では、ラムダ式や無名関数などと呼ばれる。
+  - 関数リテラルは変数に代入せずにそのまま実行することが可能。
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      func(x int) {
+        fmt.Println("inner func", x)
+      }(1)
+    }
+
+    ```
+
+### 1-5-2 クロージャーのしくみを学ぼう
+- 関数リテラルは、同じ関数の中で宣言された変数にアクセスできる。この仕組みは**クロージャー**と呼ばれる。
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    x := 0
+    increment := func() int {
+      x++
+      return x
+    }
+    fmt.Println(increment())
+    fmt.Println(increment())
+    fmt.Println(increment())
+  }
+
+  ```
+- **関数を戻り値にする**
+  - 返り値に関数を返す例
+    ```go
+    package main
+
+    import "fmt"
+
+    func incrementGenerator() func() int {
+      x := 0
+      return func() int {
+        x++
+        return x
+      }
+    }
+
+    func main() {
+      counter := incrementGenerator()
+      fmt.Println(counter())
+      fmt.Println(counter())
+      fmt.Println(counter())
+    }
+
+    ```
+
+### 1-5-3 可変長引数を使ってみよう
+- **可変長引数**とは関数が受け取る引数の数を変えられる引数のことです。
+  ```go
+  package main
+
+  import "fmt"
+
+  func foo(params ...int) {
+    fmt.Println(len(params), params)
+  }
+
+  func main() {
+    foo(10, 20)
+    foo(10, 20, 30)
+  }
+
+  ```
+- **可変長引数とfor文**
+  - 可変長引数の個々の値は、for文を使って取得できる
+    ```go
+    package main
+
+    import "fmt"
+
+    func foo(params ...int) {
+      fmt.Println(len(params), params)
+      for _, param := range params {
+        fmt.Println(param)
+      }
+    }
+
+    func main() {
+      foo(10, 20, 30)
+    }
+
+    ```
+  - 可変長引数の実体はスライスです。そのため、可変長引数を受け取る関数にスライスを渡して呼び出すことができる
+  - スライスを引数に渡すときは、関数名(スライス...)という形で、スライスの後に「.」を3つ続ける
+    ```go
+    package main
+
+    import "fmt"
+
+    func foo(params ...int) {
+      fmt.Println(len(params), params)
+      for _, param := range params {
+        fmt.Println(param)
+      }
+    }
+
+    func main() {
+      s := []int{1, 2, 3}
+      fmt.Println(s)
+      foo(s...)
+    }
+
+    ```
