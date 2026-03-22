@@ -572,4 +572,52 @@
 
     ```
 
+#### 1-4-5 マップ(Map)の基本を学ぼう
+- マップも複数の値を1つにすることができるデータ構造で、**キー(Key)と値(Value)**の組み合わせ管理する。
+- 「map[キーのデータ型]値のデータ型{キー1:値1, キー2:値2, ....}」という形で宣言する
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    m := map[string]int{"apple": 100, "banana": 200}
+    fmt.Println(m)
+    fmt.Println(m["apple"])
+  }
+
+  ```
+- **値の有無の確認**
+  - 要素の存在するかを確認するときには、「変数1」,「変数2」 := マップ[キー]という書き方をつかう。
+  - 変数1に要素の値、変数2に真偽値で要素の有無を返す
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      m := map[string]int{"apple": 100, "banana": 200}
+      fmt.Println(m)
+      v, ok := m["apple"]
+      fmt.Println(v, ok)
+      v2, ok2 := m["orange"]
+      fmt.Println(v2, ok2)
+    }
+
+    ```
+- **マップとmake関数**
+  - make関数で空のマップを作ってから、空のマップに対して値を入れていくことができる。
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      m := make(map[string]int)
+      m["pc"] = 5000
+      fmt.Println(m)
+    }
+
+    ```
+
 ## 1-5 関数で処理をまとめよう
