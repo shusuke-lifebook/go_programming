@@ -345,6 +345,104 @@
   ```
 
 ## 2-5 ログを出力しよう
+- ログの出力処理は、アプリケーションに障害が発生したときの原因究明などで必須になる
+- Goのライブラリであるlogを使ったログの出力の方法について、ファイルへの出力方法と合わせて記載する。
+
+### 2-5-1 logパッケージでログを出力しよう
+- Goでログを出力するときは、**log**パッケージを使用する。
+- よく利用されるのが**log.Println**。
+  ```go
+  package main
+
+  import "log"
+
+  func main() {
+    log.Println("logging!")
+  }
+
+  ```
+- log.Printfの例
+  ```go
+  package main
+
+  import "log"
+
+  func main() {
+    log.Println("logging!")
+    log.Printf("%T %v", "test", "test")
+  }
+
+  ```
+- log.Fatallnは、エラーの出力によく使われる。
+  - **log.Fatallnを実行するとプログラムを終了する**
+  - **log.Fatalf**では、log.Printfと同様にtypeやvalueを使える。
+  ```go
+  package main
+
+  import "log"
+
+  func main() {
+    log.Println("logging!")
+    log.Printf("%T %v", "test", "test")
+    log.Fatalln("error!")
+  }
+
+  ```
+- **log.Fatallnやlog.Fatalfの使用例**
+  - log.Fatallnやlog.Fatalfの使用例としてファイルを開くプログラムを以下に示す。
+    ```go
+    package main
+
+    import (
+      "log"
+      "os"
+    )
+
+    func main() {
+      _, err := os.Open("fdafdsafa")
+      if err != nil {
+        log.Fatalln("Exit", err)
+      }
+      log.Println("logging!")
+    }
+
+    ```
+
+### 2-5-2 ログをファイルに書き込もう
+- ログをファイルに書き込もう。次のコードはtest.logというファイルを作成してログを出力している。
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "io"
+    "log"
+    "os"
+  )
+
+  func LoggingSettings(logFile string) {
+    logfile, _ := os.OpenFile(logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+    multiLogFile := io.MultiWriter(os.Stdout, logfile)
+    log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+    log.SetOutput(multiLogFile)
+  }
+
+  func main() {
+    LoggingSettings("test.log")
+    _, err := os.Open("fdafdsafa")
+    if err != nil {
+      log.Fatalln("Exit", err)
+    }
+    log.Println("logging!")
+    log.Printf("%T %v", "test", "test")
+
+    log.Fatalf("%T %v", "test", "test")
+    log.Fatalln("error!!")
+
+    fmt.Println("ok!")
+  }
+
+  ```
 
 ## 2-6 エラーハンドリングをしよう
 
