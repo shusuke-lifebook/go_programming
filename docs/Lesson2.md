@@ -301,6 +301,48 @@
   ```
 
 ## 2-4 defer文で処理を遅らせて実行しよう
+- defer文を使うと、処理を遅らせて関数の最後に実行させることが可能。
+- 例えば、ファイルを開く処理を実行した場合、ファイルを使い終わったら閉じる処理を入れる必要がある。ファイルを開いたときにdefer文の閉じる処理を入れておくとファイルの閉じ忘れを防ぐことができる。
+
+### 2-4-4 defer文で処理を実行しよう
+- **defer**文の処理の遅延実行をする際に使う。
+- 複数のdefer文がある場合、最初に書いたdefer文が最後に実行される。(**Stacking defers**という)
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    defer fmt.Println("world")
+    fmt.Println("hello")
+  }
+
+  ```
+
+### 2-4-5 defer文でファイルの閉じ忘れを防ごう
+- defer文の活用方法として、ファイルをOpenするときの例
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "os"
+  )
+
+  func foo() {
+    defer fmt.Println("world foo")
+    fmt.Println("hello foo")
+  }
+
+  func main() {
+    file, _ := os.Open("./lesson.go")
+    defer file.Close()
+    data := make([]byte, 100)
+    file.Read(data)
+    fmt.Println(string(data))
+  }
+
+  ```
 
 ## 2-5 ログを出力しよう
 
