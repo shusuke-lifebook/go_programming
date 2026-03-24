@@ -116,6 +116,89 @@
   ```
 
 ## 2-2 for文で処理を繰り返し実行しよう
+- Goでの繰り返し処理はfor文を使う。
+  - 次の繰り返しに進むcontinue
+  - 繰り返しを抜けるbreak
+- 他のプログラム言語と同じ
+
+### 2-2-1 for文による繰り返し処理を作ろう
+- Goでの**for**文は、forの後に「繰り返しで使う変数の初期化」「繰り返しを続ける条件」「繰り返すたびに実行する処理」を;(セミコロン)で区切って書く
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    for i := 0; i < 10; i++ {
+      fmt.Println(i)
+    }
+  }
+
+  ```
+
+### 2-2-2 continue文で次の繰り返し進む処理を作ろう
+- **continue**文は、処理の途中で次の繰り返し処理に進むときに使う
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    for i := 0; i < 10; i++ {
+      if i == 3 {
+        fmt.Println("continue")
+        continue
+      }
+      fmt.Println(i)
+    }
+  }
+
+  ```
+
+### 2-2-3 break文で繰り返しを途中で抜けよう
+- **break**文は、繰り返しを中断してfor文から抜けたいときにしようする
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    for i := 0; i < 10; i++ {
+      if i == 3 {
+        fmt.Println("continue")
+        continue
+      }
+
+      if i > 5 {
+        fmt.Println("break")
+        break
+      }
+      fmt.Println(i)
+    }
+  }
+
+  ```
+
+### 2-2-4 for文の省略記法を使おう
+- for文の1つ目の「変数の初期化」と3つ目の「繰り返すたびに実行する処理」は省略可能
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    sum := 1
+    for sum < 10 {
+      sum += sum
+      fmt.Println(sum)
+    }
+    fmt.Println(sum)
+  }
+
+  ```
+
+### 2-2-5 rangeで繰り返し処理を簡単に書こう
+- for文と一緒に使うと便利なのが、**range**です。
 
 ## 2-3 switch文で条件に応じた処理を実行しよう
 
