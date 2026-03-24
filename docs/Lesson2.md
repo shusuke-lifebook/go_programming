@@ -88,6 +88,32 @@
   ```
 
 ### 2-1-3 if文の条件式を変数で宣言しよう
+- 変数の代入とif文の条件を1行に纏めて書く場合、**if文の後に変数宣言し、;(セミコロン)で繋げて条件を書く
+  ```go
+  package main
+
+  import "fmt"
+
+  func by2(num int) string {
+    if num%2 == 0 {
+      return "ok"
+    } else {
+      return "no"
+    }
+  }
+
+  func main() {
+    result := by2(10)
+    if result == "ok" {
+      fmt.Println("great")
+    }
+
+    if result2 := by2(10); result2 == "ok" {
+      fmt.Println("great2")
+    }
+  }
+
+  ```
 
 ## 2-2 for文で処理を繰り返し実行しよう
 
