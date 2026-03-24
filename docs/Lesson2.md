@@ -230,6 +230,75 @@
   ```
 
 ## 2-3 switch文で条件に応じた処理を実行しよう
+- 条件に応じて別の処理を実行するには、if文を用いるほかにswitch文を使う方法がある。
+
+### 2-3-1 switch文で条件ごとの処理を作ろう
+- **switch文**で変数osの値を判定していく例。
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    os := "mac"
+    switch os {
+    case "mac":
+      fmt.Println("Mac!!")
+    case "windows":
+      fmt.Println("Windows!!")
+    default:
+      fmt.Println("Default!!")
+    }
+  }
+
+  ```
+    
+### 2-3-2 変数宣言とswitch文を纏めて書こう
+- if文と同様に、**変数への代入とswitch文は、1行でまとめて書ける**
+  ```go
+  package main
+
+  import "fmt"
+
+  func getOsName() string {
+    return "mac"
+  }
+
+  func main() {
+    switch os := getOsName(); os {
+    case "mac":
+      fmt.Println("Mac!!")
+    case "windows":
+      fmt.Println("Windows!!")
+    default:
+      fmt.Println("Default!!")
+    }
+  }
+
+  ```
+
+### 2-3-3 条件式を書かないswitch文を作ろう
+- **switch文に条件式を書かず、caseに判定条件を書く**
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "time"
+  )
+
+  func main() {
+    t := time.Now()
+    fmt.Println(t.Hour())
+    switch {
+    case t.Hour() < 12:
+      fmt.Println("Morning")
+    case t.Hour() < 17:
+      fmt.Println("Afternoon")
+    }
+  }
+
+  ```
 
 ## 2-4 defer文で処理を遅らせて実行しよう
 
