@@ -199,6 +199,35 @@
 
 ### 2-2-5 rangeで繰り返し処理を簡単に書こう
 - for文と一緒に使うと便利なのが、**range**です。
+  - スライスの例
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    l := []string{"python", "go", "java"}
+    for i, v := range l {
+      fmt.Println(i, v)
+    }
+  }
+
+  ```
+- マップの例
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    m := map[string]int{"apple": 100, "banana": 200}
+
+    for k, v := range m {
+      fmt.Println(k, v)
+    }
+  }
+
+  ```
 
 ## 2-3 switch文で条件に応じた処理を実行しよう
 
