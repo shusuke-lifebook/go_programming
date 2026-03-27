@@ -8,6 +8,67 @@
 
 ### 3-1-1 ポインタでメモリ上のアドレスを参照する
 - Goにおける**ポインタ**は変数に **&** をつけることでメモリ上のアドレスを確認できる。
+- ポインタ変数は「var p \*int」のように「\*int」のように表現する。
+- アドレスが指すメモリアドレスの中身を確認したいときは、ポインタ変数に\*をつける
+
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    var n int = 100
+    fmt.Println(n)
+    fmt.Println(&n)
+
+    var p *int = &n
+    fmt.Println(p)
+    fmt.Println(*p)
+  }
+
+  ```
+
+### 3-1-2 関数でポインタを受け取る
+- 関数の引数がポインタを渡せるように\*をつける。例) 「x \*int」
+- 関数内でポインタの実体を更新する\*x = 1のようにする
+  ```go
+  package main
+
+  import "fmt"
+
+  func one(x *int) {
+    *x = 1
+  }
+
+  func main() {
+    var n int = 100
+    one(&n)
+    fmt.Println(n)
+  }
+
+  ```
+
+### 3-1-3 変数のアドレスと中身を表示する
+- &と\*を使って変数のアドレスを表示したり、アドレスが指す実体を表示させてみよう
+  - 変数nのアドレスを表示させるためには、「&n」と書く
+  - &nのアドレスの中身を確認するには、「\*&n」と書く
+    ```go
+    package main
+
+    import "fmt"
+
+    func one(x *int) {
+      *x = 1
+    }
+
+    func main() {
+      var n int = 100
+      one(&n)
+      fmt.Println(n)
+      fmt.Println(&n)
+    }
+
+    ```
 
 ## 3-2 new 関数 と make 関数の違い
 
