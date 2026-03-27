@@ -484,3 +484,52 @@
   ```
 
 ## 2-7 panicとrecover
+- panicとrecoverは、プログラムの強制終了を扱う際に使う関数です。
+- 実際にプログラムでpanicとrecoverを書くことはあまり推奨されていない
+
+### 2-7-1 panicでプログラムを強制終了させよう
+- **panic**は実行中のプログラムを停止する仕組み関数である。
+  ```go
+  package main
+
+  import "fmt"
+
+  func thirdPartyConnectDB() {
+    panic("Unable to connect database")
+  }
+
+  func save() {
+    thirdPartyConnectDB()
+  }
+
+  func main() {
+    save()
+    fmt.Println("OK?")
+  }
+
+  ```
+### 2-7-2 発生したpanicをrecoverで処理しよう
+- panicで発生したエラーを処理するには、**recover**を使う。
+  ```go
+  package main
+
+  import "fmt"
+
+  func thirdPartyConnectDB() {
+    panic("Unable to connect database")
+  }
+
+  func save() {
+    defer func() {
+      s := recover()
+      fmt.Println(s)
+    }()
+    thirdPartyConnectDB()
+  }
+
+  func main() {
+    save()
+    fmt.Println("OK?")
+  }
+
+  ```
