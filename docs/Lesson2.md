@@ -445,5 +445,42 @@
   ```
 
 ## 2-6 エラーハンドリングをしよう
+- プログラムにエラーが発生したときの処理をエラーハンドリングという。
+- 発生したエラーの内容を表示させて原因をわかりやすくさせるなど
+- エラーハンドリングは重要な意味を持つため、ここではGoにおける基本的なエラーハンドリングについて確認する。
+
+### 2-6-1 Goでエラーハンドリングをしよう
+- エラーが発生したとき、どのように処理(**エラーハンドリング**)すればよいのか説明する
+- 例として、コードを書いたファイルをos.Openで読み込んでいきます。
+- このとき、読み込んだファイルの内容を変数file、エラーの内容を変数errに入れる。
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "log"
+    "os"
+  )
+
+  func main() {
+    file, err := os.Open("./lesson.go")
+    if err != nil {
+      log.Fatalln("Error!")
+    }
+    defer file.Close()
+    data := make([]byte, 100)
+    count, err := file.Read(data)
+    if err != nil {
+      log.Fatalln("Error!")
+    }
+    fmt.Println(count, string(data))
+
+    err = os.Chdir("test")
+    if err != nil {
+      log.Fatal("Error")
+    }
+  }
+
+  ```
 
 ## 2-7 panicとrecover
