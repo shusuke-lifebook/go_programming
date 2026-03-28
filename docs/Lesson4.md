@@ -473,5 +473,120 @@
     }
 
   ```
-  
+
 ## 4-6 カスタムエラーを作成しよう
+- 独自のエラーを作成する場合、Errorメソッドを作成してerrorというインターフェースを実装することで、エラー内容の表示を変更できる。
+- 自分で作成したエラーを返り値として返す場合、ポインタとして返すことが推奨されている
+
+### 4-6-1 errorインターフェースでカスタムエラーを作成しよう
+- エラーを独自で作成するには、**errorインターフェース**を利用する
+- GoのErrorsのチュートリアルを確認すると、errorインターフェースがどのように書かれているかが確認できる。
+
+  ```go
+  package main
+
+  import "fmt"
+
+  type UserNotFound struct {
+    UserName string
+  }
+
+  func (e *UserNotFound) Error() string {
+    return fmt.Sprintf("User not found: %v", e.UserName)
+  }
+
+  func myFunc() error {
+    // something wrong
+    ok := false
+    if ok {
+      return nil
+    }
+    return &UserNotFound{UserName: "mike"}
+  }
+
+  func main() {
+    if err := myFunc(); err != nil {
+      fmt.Println(err)
+    }
+  }
+
+  ```
+
+### 4-6-2 エラーはポインタで返そう
+- **Errorは&と\*をつけてポインタレシーバーとする**ことが推奨されている
+  - エラー内容を比較する際に問題が起きる可能性があるため。
+
+- **Chdir関数におけるエラー処理**
+  - Chdir関数は何か問題がなければnilを返し、問題があった場合には、&PathErrorというエラーを返しています。
+- **発生したエラーを比較する**
+  - コードの違う場所でエラーが発生した場合、ポインタで比較した場合は異なるエラーと判断される。
+  - これを活用して例えば、次のように1つ目と2つ目のエラーがそれぞれ別の処理をしたい場合、エラーハンドリングを変化させることがあります。
+    ```go
+    func main() {
+      e1 := &UserNotFound{"mike"}
+      e2 := &UserNotFound{"mike"}
+      fmt.Println(e1 == e2)
+      if err := myFunc(); err != nil {
+        fmt.Println(err)
+        if err == e1 {
+
+        }
+        if err == e2 {
+
+        }
+      }
+    }
+    ```
+
+- **Readメソッドにおけるエラーの例**
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "io"
+    "strings"
+  )
+
+  func main() {
+    r := strings.NewReader("Hello, Reader!")
+
+    b := make([]byte, 8)
+    for {
+      n, err := r.Read(b)
+      fmt.Printf("n = %v err = %v b = %v\n", n, err, b)
+      fmt.Printf("b[:n] = %q\n", b[:n])
+      if err == io.EOF {
+        break
+      }
+    }
+  }
+
+  ```
+- **自分で作成したエラーと比較する**
+  ```go
+  package main
+
+  import (
+    "errors"
+    "fmt"
+    "strings"
+  )
+
+  func main() {
+    r := strings.NewReader("Hello, Reader!")
+
+    b := make([]byte, 8)
+    e := errors.New("EOF")
+
+    for {
+      n, err := r.Read(b)
+      fmt.Printf("n = %v err = %v b = %v\n", n, err, b)
+      fmt.Printf("b[:n] = %q\n", b[:n])
+      if err == e {
+        break
+      }
+    }
+  }
+
+  ```
