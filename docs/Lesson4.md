@@ -298,6 +298,44 @@
     ```
 
 ### 4-3-2 ダックタイピング
+- Humanというインターフェースを、引数として受け付ける関数DriveCarを作っていく
+- 引数humanのSayメソッドは、戻り値が「Mr.Mike」であれば「Run」そうでなければ「Get Out」を表示する。
+
+  ```go
+  package main
+
+  import "fmt"
+
+  type Human interface {
+    Say() string
+  }
+
+  type Person struct {
+    Name string
+  }
+
+  func (p *Person) Say() string {
+    p.Name = "Mr." + p.Name
+    fmt.Println(p.Name)
+    return p.Name
+  }
+
+  func DriveCar(human Human) {
+    if human.Say() == "Mr.Mike" {
+      fmt.Println("Run")
+    } else {
+      fmt.Println("Get out")
+    }
+  }
+
+  func main() {
+    var mike Human = &Person{"Mike"}
+    var x Human = &Person{"X"}
+    DriveCar(mike)
+    DriveCar(x)
+  }
+
+  ```
 
 ## 4-4 型アサーションとswitch typeを使う
 
