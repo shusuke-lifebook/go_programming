@@ -338,6 +338,89 @@
   ```
 
 ## 4-4 型アサーションとswitch typeを使う
+- Goではメソッドを持たない空のインターフェースを作成できる。
+- 空のインターフェースには、どのような型の値でも入れることができるので、引数にどんな型が入るのか分からないときに活用できる
+- そして、空のインターフェースに入れた値を特定の値として使うときに必要なのが型アサーションです。
+- ここでは、型アサーションの方法と、switch typeと呼ばれる活用方法について記載する
+
+### 4-4-1 型アサーションについて学ぼう
+- 最初に、iというインターフェースを引数にするdoという関数を作る
+  - 引数は「interface{}」**空のインターフェース**。どのような型でも引数として受け付ける
+- do関数で引数を2倍にして変数iiに代入、初期化し変数iiの値を表示してみよう
+  ```go
+  func do(i interface{}) {
+    ii := i * 2 // invalid operation: i * 2 (mismatched types interface{} and untyped int)
+    fmt.Println(ii)
+  }
+
+  func main() {
+    do(10)
+  }
+
+  ```
+- 空のインターフェースが持つ値をintやstringといった具体的な型として扱うため、**型アサーション(Type Assertion)**という仕組みを使う
+- 「ii := i.(int)」とすることで、iの値をint型として扱い、変数iiに代入する。
+  ```go
+  func do(i interface{}) {
+    ii := i.(int)
+    ii *= 2
+    fmt.Println(ii)
+  }
+
+  func main() {
+    do(10)
+  }
+
+  ```
+- **文字列への型アサーション**
+  - 文字列への型アサーションも確認してみよう
+  - main関数内で実行するdo関数の引数「"Mike"」とし、do関数内で引数をstring型に型アサーションして変数ssに代入します。文字列に「!」を足して、表示を確認してみよう
+
+    ```go
+    package main
+
+    import "fmt"
+
+    func do(i interface{}) {
+      ss := i.(string)
+      fmt.Println(ss + "!")
+    }
+
+    func main() {
+      do("Mike")
+    }
+
+    ```
+
+### 4-4-2 switch typeで型ごとに処理を実行しよう
+- 型アサーションを用いるコードは、int型を処理したいか、文字列を処理したいかわかりにくくなる
+- 異なる型に対応できるようにコードを書き換えてみよう
+- switch文で、実行結果に「v := i.(type)」と書きiをtype型アサーションした結果をvに代入する
+- なお、i.(type)という書き方は、switchと一緒でなければ使えない。そのため、i.(type)を単独で書くとエラーになる。switchとtypeはセットであると覚える。
+
+  ```go
+  package main
+
+  import "fmt"
+
+  func do(i interface{}) {
+    switch v := i.(type) {
+    case int:
+      fmt.Println(v * 2)
+    case string:
+      fmt.Println(v + "!")
+    default:
+      fmt.Printf("I don't know %T\n", v)
+    }
+  }
+
+  func main() {
+    do(10)
+    do("Mike")
+    do(true)
+  }
+
+  ```
 
 ## 4-5 Stringerで表示内容を変更しよう
 
