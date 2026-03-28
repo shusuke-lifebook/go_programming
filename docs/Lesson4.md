@@ -175,6 +175,60 @@
       ```
 
 ## 4-2 構造体の埋め込みをしよう
+- Goでは、構造体の中に構造体を持たせることで、オブジェクト指向プログラミングにおける継承のようなことができる
+- ここでは、構造体を埋め込む方法を他のプログラミング言語の例と比較しつつ説明しておく。
+
+### 4-2-1 構造体の中に構造体を埋め込もう
+- Goの**埋め込み(Embedded)**という仕組みについて説明する。
+- これは他のプログラミング言語では、**継承**などと呼ばれる処理にあたる。
+- **Goで構造体を埋め込む**
+  - 構造体の中に構造体の中に埋め込む
+
+    ```go
+    package main
+
+    import "fmt"
+
+    type Vertex struct {
+      x, y int
+    }
+
+    func (v Vertex) Area() int {
+      return v.x * v.y
+    }
+
+    func (v *Vertex) Scale(i int) {
+      v.x = v.x * i
+      v.y = v.y * i
+    }
+
+    type Vertex3D struct {
+      Vertex
+      z int
+    }
+
+    func (v Vertex3D) Area3D() int {
+      return v.x * v.y * v.z
+    }
+
+    func (v *Vertex3D) Scale3D(i int) {
+      v.x = v.x * i
+      v.y = v.y * i
+      v.z = v.z * i
+    }
+
+    func New(x, y, z int) *Vertex3D {
+      return &Vertex3D{Vertex{x, y}, z}
+    }
+
+    func main() {
+      v := New(3, 4, 5)
+      v.Scale(10)
+      fmt.Println(v.Area())
+      fmt.Println(v.Area3D())
+    }
+
+    ```
 
 ## 4-3 インターフェースを使ったプログラムをつくろ
 
