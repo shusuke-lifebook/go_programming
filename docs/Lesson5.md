@@ -59,6 +59,42 @@
   - **ゴルーチンの処理が終わらなくてもプログラムが終了してしまう。**
 
 ### 5-1-2 sync.WaitGroupで並行処理を待機させよう 
+- プログラムが途中終了することを避けるには、**sync.WaitGroup**を使う
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "sync"
+  )
+
+  func normal(s string) {
+    for i := 0; i < 5; i++ {
+      // time.Sleep(100 * time.Millisecond)
+      fmt.Println(s)
+    }
+  }
+
+  func goroutine(s string, wg *sync.WaitGroup) {
+    for i := 0; i < 5; i++ {
+      // time.Sleep(100 * time.Millisecond)
+      fmt.Println(s)
+    }
+    wg.Done()
+  }
+
+  func main() {
+    var wg sync.WaitGroup
+    wg.Add(1)
+    go goroutine("world", &wg)
+    normal("Hello")
+    wg.Wait()
+  }
+
+  ```
+- **WaitGroupの注意点**
+  - 「wg.Done()」をコメントアウトして実行すると、途中で止まってしまいエラーになる
+  - VSCodeでデバックが途中で止まってしまった場合はF5キーなどを押して処理を進める
 
 ## 5-2 チャネルでゴルーチンと値のやりとりをしよう
 
