@@ -71,5 +71,59 @@
     ```
 
 ## 3-2 new 関数 と make 関数の違い
+- new関数はメモリを確保するための関数でポインタなどを作成する際に必要になる
+
+### 3-2-1 newを使ってポインタのアドレスを確保する
+- **new**関数を利用すると値を何も入れない状態で、メモリにポインタが入る領域を確保することができる
+  - 例) 「var p *int = new(int)」
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      var p *int = new(int)
+      fmt.Println(p)
+    }
+
+    ```
+  - new関数を使わずにポインタ宣言すると<nil>となる
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      var p *int = new(int)
+      fmt.Println(p)
+
+      var p2 *int
+      fmt.Println(p2)
+    }
+
+    ```
+
+### 3-2-2 new関数とmake関数の違い
+- new関数と似たものに、mapとスライスを作成するときに使うmake関数がある。
+- コードを見てnew関数とmake関数の違いを確認しよう
+  - **ポインタを返す場合は、new関数**
+  - **そうでない場合は、make関数**
+  ```go
+  package main
+
+  import "fmt"
+
+  func main() {
+    s := make([]int, 0)
+    fmt.Printf("%T\n", s)
+
+    m := make(map[string]int)
+    fmt.Printf("%T\n", m)
+
+    var p *int = new(int)
+    fmt.Printf("%T\n", p)
+  }
+
+  ```
 
 ## 3-3 構造体で複数の値をまとめて扱う
