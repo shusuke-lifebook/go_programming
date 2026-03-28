@@ -129,6 +129,51 @@
 
       ```
 
+### 4-1-4 構造体以外の型のメソッド
+- typeを使うと、組み込み型に新しい名前をつけた独自の型を作成することが可能
+- その独自の型にメソッドを持たすことができる
+  - 例) int型にMyIntという別の名前を付けて新しい型を作ってみる。
+  
+    ```go
+    package main
+
+    import "fmt"
+
+    type MyInt int
+
+    func (i MyInt) Double() int {
+      return int(i * 2)
+    }
+
+    func main() {
+      myInt := MyInt(10)
+      fmt.Println(myInt.Double())
+    }
+
+    ```
+  - **構造体以外の型のメソッドの注意点**
+    - 1つ注意点として、「return int(i * 2)」と返り値をint型にcastしていますが、castしないとエラーがでます。
+
+      ```go
+      package main
+
+      import "fmt"
+
+      type MyInt int
+
+      func (i MyInt) Double() int {
+        fmt.Printf("%T %v\n", i, i)
+        fmt.Printf("%T %v\n", 1, 1)
+        return int(i * 2)
+      }
+
+      func main() {
+        myInt := MyInt(10)
+        fmt.Println(myInt.Double())
+      }
+
+      ```
+
 ## 4-2 構造体の埋め込みをしよう
 
 ## 4-3 インターフェースを使ったプログラムをつくろ
