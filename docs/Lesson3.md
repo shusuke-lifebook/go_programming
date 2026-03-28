@@ -127,3 +127,67 @@
   ```
 
 ## 3-3 構造体で複数の値をまとめて扱う
+- struct(構造体)は、複数の値をまとめたものです。
+- Goには他の言語におけるクラスにあたるものがないが、構造体とメソッドを組み合わせることでオブジェクトのように扱うことができる
+
+### 3-3-1 struct(構造体)
+- **struct**(構造体)。まず、main関数の外でVertexという名前の構造体を作成し、{}の中に2つのint型の値X,Yを書く
+- main関数で構造体Vertexを変数vに代入する。このとき、「Vertex{X:1, Y:2}」のように書いて、構造体Vertexを初期化する。
+  ```go
+  package main
+
+  import "fmt"
+
+  type Vertex struct {
+    X int
+    Y int
+  }
+
+  func main() {
+    v := Vertex{X: 1, Y: 2}
+    fmt.Println(v)
+  }
+
+- 構造体の中身の値を確認するには、「v.X」のように書く。
+  ```go
+  func main() {
+    v := Vertex{X: 1, Y: 2}
+    fmt.Println(v)
+    fmt.Println(v.X, v.Y)
+  }
+
+  ```
+- 構造体の中身を書き換える場合、v.X = 100のように書く
+  ```go
+  func main() {
+    v := Vertex{X: 1, Y: 2}
+    fmt.Println(v)
+    fmt.Println(v.X, v.Y)
+    v.X = 100
+    fmt.Println(v.X, v.Y)
+  }
+
+  ```
+- 構造体の一部だけを初期化して宣言することもできる。Xだけを初期化すると、Yの値はint型の初期値である0になる。
+  ```go
+  func main() {
+    v2 := Vertex{X: 1}
+    fmt.Println(v2)
+  }
+  ```
+- string型の場合、初期値は空文字になる。
+  ```go
+  type Vertex struct {
+    X int
+    Y int
+    S string
+  }
+
+  func main() {
+    v2 := Vertex{X: 1}
+    fmt.Println(v2)
+  }
+
+  ```
+- フィールドを指定せずに初期する場合、「Vertex{1, 2, "test"}」のように、構造体に書いた順番に書く
+- 
