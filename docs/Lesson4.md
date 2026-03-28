@@ -231,6 +231,73 @@
     ```
 
 ## 4-3 インターフェースを使ったプログラムをつくろ
+- Goのインターフェースは、メソッドの名前のみを宣言したもので、そのメソッドを持つ型はインターフェースを実装していると判定される。
+- Goのインターフェースの使い方について説明しつつ、ダックタイピングについても解説していく。
+
+### 4-3-1 インターフェースを作成しよう
+- Goにおける**インターフェース**を説明していく。Humanというインターフェースを作成し、{}の中に「Say()」メソッドを書く
+- インターフェースでは、**メソッド名のみを宣言し、処理のコードを書かない**
+- 構造体を作成してインターフェースに当てはめる
+  - string型のNameというフィールドを持つPersonという構造体を作成する。
+  - Personに紐づくメソッドとしてSayを作成する
+- Human型(インターフェース型)の変数mikeを宣言し、構造体Personに{"Mike"}を代入する。
+- 「mike.Say()」と実行すると、「Mike」と表示される。
+
+  ```go
+  package main
+
+  import "fmt"
+
+  type Human interface {
+    Say()
+  }
+
+  type Person struct {
+    Name string
+  }
+
+  func (p Person) Say() {
+    fmt.Println(p.Name)
+  }
+
+  func main() {
+    var mike Human = Person{"Mike"}
+    mike.Say()
+  }
+
+  ```
+- **インターフェースのメソッドで構造体の中身を書き換える場合**
+  - Sayメソッドの処理に追加。p.Nameに「Mr.」を加える。
+  - 構造体の中身を書き換えることになるので、Personの前に\*をつけてポインタレシーバーする必要がある。
+  - メソッドの変更のみだとエラーとなる。
+  - Sayメソッドはポインタレシーバーとなるので、main関数から呼び出すSayメソッドを呼びだすさいに、アドレスとして渡す必要がある。
+
+    ```go
+    package main
+
+    import "fmt"
+
+    type Human interface {
+      Say()
+    }
+
+    type Person struct {
+      Name string
+    }
+
+    func (p *Person) Say() {
+      p.Name = "Mr." + p.Name
+      fmt.Println(p.Name)
+    }
+
+    func main() {
+      var mike Human = &Person{"Mike"}
+      mike.Say()
+    }
+
+    ```
+
+### 4-3-2 ダックタイピング
 
 ## 4-4 型アサーションとswitch typeを使う
 
