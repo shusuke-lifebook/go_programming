@@ -423,5 +423,55 @@
   ```
 
 ## 4-5 Stringerで表示内容を変更しよう
+- Stringerは、fmtパッケージに含まれるインターフェースです。
+- このインターフェースにあるStringメソッドを実装すると、fmt.Printlnなどによる表示が変更される。
 
+### 4-5-1 Stringerインターフェースを利用しよう
+- **Stringer**はfmtパッケージのprint.goに書かれているインターフェースです。
+- Stringerインターフェースは、Stringメソッドを持っている。
+- Stringerインターフェースを実装した構造体をfmt.Println関数の引数とするとStringメソッドの返り値が出力される。
+
+- **Stringerで表示内容を変更する**
+  - NameとAgeを持った構造体Personを作成する
+  - main関数内で初期化して変数mikeに代入し「fmt.Println(mike)」と実行すると「Mike 22」が表示される。
+
+    ```go
+    package main
+
+    import "fmt"
+
+    type Person struct {
+      Name string
+      Age  int
+    }
+
+    func main() {
+      mike := Person{"Mike", 22}
+      fmt.Println(mike)
+    }
+
+    ```
+  - Personに紐づいたStringメソッドを作り返り値として「return fmt.Sprintf("My name is %v.", p.name)」とする
+
+    ```go
+    package main
+
+    import "fmt"
+
+    type Person struct {
+      Name string
+      Age  int
+    }
+
+    func (p Person) String() string {
+      return fmt.Sprintf("My name is %v.", p.Name)
+    }
+
+    func main() {
+      mike := Person{"Mike", 22}
+      fmt.Println(mike)
+    }
+
+  ```
+  
 ## 4-6 カスタムエラーを作成しよう
