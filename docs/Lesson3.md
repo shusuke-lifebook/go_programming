@@ -190,4 +190,49 @@
 
   ```
 - フィールドを指定せずに初期する場合、「Vertex{1, 2, "test"}」のように、構造体に書いた順番に書く
-- 
+  ```go
+  func main() {
+    v3 := Vertex{1, 2, "test"}
+    fmt.Println(v3)
+
+    v4 := Vertex{}
+    fmt.Println(v4)
+  }
+  ```
+- **構造体の値を書き方**
+  - 構造体VertexのYを小文字に変えてみるとエラーになる
+    ```go
+    type Vertex struct {
+      X int
+      y int
+      S string
+    }
+    ```
+- 構造体のすべての値を初期値で初期化する方法として、「Vertex{}」と書く他に、「var v5 Vertex」のように各方法がある。varで宣言すると、スライスやmapの場合はnilとなっているが構造体の場合はnilではないので気をつけましょう
+  ```go
+    var v5 Vertex
+    fmt.Println(v5)
+
+  ```
+
+### 3-3-2 構造体とポインタ
+- 「new(Vertex)」と書くと、「&{0 0 }」とアドレスがついて表示される。
+  ```go
+  func main() {
+    v4 := Vertex{}
+    fmt.Printf("%T %v\n", v4, v4)
+
+    var v5 Vertex
+    fmt.Printf("%T %v\n", v5, v5)
+
+    v6 := new(Vertex)
+    fmt.Printf("%T %v\n", v6, v6)
+  }
+
+  ```
+- 「&Vertex{}」のように&をつけて書くこと、newで作成したときと同様にポインタとなる
+  - newで作成するよりも「&Vertex{}」のように**アドレスをつけた状態で宣言したほうが、ポインタが返ってくることも明示的な**ためよく使われる。
+    ```go
+      v7 := &Vertex{}
+      fmt.Printf("%T %v\n", v7, v7)
+    ```
