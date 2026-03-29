@@ -161,6 +161,102 @@
 
     ```
 
+### 5-2-2 バッファありチャネルを使って値をやりとりしよう
+- 上記までのチャネルは**unbuffered channel(バッファなしチャネル)**といい、**バッファ(チャネルに入る値の数)を指定せずに作ったチャネルです。
+- バッファを指定したチャネルが**buffered channle(バッファありチャネル)**。
+  - 例)「ch := make(chan int, 2)」と書いてバッファを2と指定している。
+
+    ```go
+    // バッファ2つに3つ目までをチャネルに入れようとするとエラーとなる
+    package main
+
+    import "fmt"
+
+    func main() {
+      ch := make(chan int, 2)
+      ch <- 100
+      fmt.Println(len(ch))
+      ch <- 200
+      fmt.Println(len(ch))
+      ch <- 300
+      fmt.Println(len(ch))
+    }
+
+    ```
+  - エラーを回避するには、「x := <-ch」で値を受信して値を取り出す必要がある。
+
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      ch := make(chan int, 2)
+      ch <- 100
+      fmt.Println(len(ch))
+      ch <- 200
+      fmt.Println(len(ch))
+
+      x := <-ch
+      fmt.Println(x)
+
+      ch <- 300
+      fmt.Println(len(ch))
+    }
+
+    ```
+
+### 5-2-3 rangeとcloseでチャネルから値を取り出そう
+- goroutine1関数ですべてのスライスの中身を合計してからチャネルに渡している
+- これを合計していく途中過程もチャネルに送信して表示してみよう。
+  - rangeはチャネルから値を送られてくるのを待ち続けるので、これ以上送信しないことを伝えるために**close**をする必要がある。
+
+    ```go
+    package main
+
+    import "fmt"
+
+    func goroutine1(s []int, c chan int) {
+      sum := 0
+      for _, v := range s {
+        sum += v
+        c <- sum
+      }
+      close(c)
+
+    }
+
+    func main() {
+      s := []int{1, 2, 3, 4, 5}
+      c := make(chan int)
+      go goroutine1(s, c)
+      for i := range c {
+        fmt.Println(i)
+      }
+    }
+
+    ```
+  - **バッファありチャネルからrangeで値を取り出す**
+
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+      ch := make(chan int, 2)
+      ch <- 100
+      fmt.Println(len(ch))
+      ch <- 200
+      fmt.Println(len(ch))
+      close(ch)
+
+      for c := range ch {
+        fmt.Println(c)
+      }
+    }
+
+    ```
 
 ## 5-3 2つのゴルーチンで値を送受信しよう
 
