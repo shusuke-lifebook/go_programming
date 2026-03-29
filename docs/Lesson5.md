@@ -259,6 +259,66 @@
     ```
 
 ## 5-3 2つのゴルーチンで値を送受信しよう
+- プログラムにおいて
+  - 値を送信する関数などの処理をProducerと呼ぶ
+  - 受信する処理をConsumerと呼ぶ
+- Goでは複数のゴルーチンにProducerとConsumerの役割を持たせた場合の並行処理のプログラムについて記載する。
+
+### 5-3-1 ProducerとConsumerのゴルーチンを作ろう
+- **Producer**と**Consumer**という2つの役割持つゴルーチンを作っていく。
+  - いろいろなサーバーからログ解析結果をProducer側で取得
+  - Consumer側に渡してログの処理や保存するようなアプリケーションなどのイメージ
+- **Producerの処理**
+  - チャネルを通じて値をconsumer関数のゴルーチンの送るproducer関数を作る
+- **Consumerの処理**
+  - producer関数のゴルーチンからチャネルを受け取って値を処理するconsumer関数を作る
+  - チャネルの値はrangeで取り出す処理をする
+  - producer関数から渡された値の処理が終わったということを「wg.Done()」を実行する
+- **main関数の処理**
+  - main関数では、まず、sync.WaitGroupを宣言する。
+  - チャネルを ch := make(chan int)と書いて作る
+  - producer関数をfor文で10回繰り返し
+    - wg.Add(1)
+    - producer関数を呼び出す
+  - 最後にcosumer関数を呼び出す。
+    - wg.Wait()
+    - close(ch)
+      ```go
+      package main
+
+      import (
+        "fmt"
+        "sync"
+      )
+
+      func producer(ch chan int, i int) {
+        ch <- i * 2
+      }
+
+      func consumer(ch chan int, wg *sync.WaitGroup) {
+        for i := range ch {
+          fmt.Println("process", i*1000)
+          wg.Done()
+        }
+      }
+
+      func main() {
+        var wg sync.WaitGroup
+        ch := make(chan int)
+
+        // Producer
+        for i := 0; i < 10; i++ {
+          wg.Add(1)
+          go producer(ch, i)
+        }
+
+        // Consumer
+        go consumer(ch, &wg)
+        wg.Wait()
+        close(ch)
+      }
+
+      ```
 
 ## 5-4 pipelineによる並行処理
 
