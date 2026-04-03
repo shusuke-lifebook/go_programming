@@ -369,6 +369,55 @@
   ```
 
 ## 5-5 selectでチャネルに応じた処理をしよう
+- 複数のチャネルを使って複数のゴルーチンとやりとりするとき受信したチャネルによって処理を分岐させる場合がある。
+- その場合、selectを使うことでチャネルごとの処理を書くことができる
+- ここでは、selectを用いたプログラムがどのようなものかについて記述する
+
+### 5-5-1 selectの使い方を学ぼう
+- 複数のゴルーチンがありますが、それぞれ別チャネルでデータを受信する。
+- 例えば、複数のゴルーチンからネットワークのパケットを受信するようなイメージです。
+- このとき、それぞれの処理をブロッキングしないように、**select**を使う
+
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "time"
+  )
+
+  func goroutine1(ch chan<- string) {
+    for {
+      ch <- "packet from 1"
+      time.Sleep(1 * time.Second)
+    }
+  }
+
+  func goroutine2(ch chan<- string) {
+    for {
+      ch <- "packet from 2"
+      time.Sleep(1 * time.Second)
+    }
+  }
+
+  func main() {
+    c1 := make(chan string)
+    c2 := make(chan string)
+
+    go goroutine1(c1)
+    go goroutine2(c2)
+
+    for {
+      select {
+      case msg1 := <-c1:
+        fmt.Println(msg1)
+      case msg2 := <-c2:
+        fmt.Println(msg2)
+      }
+    }
+  }
+
+  ```
 
 ## 5-6 selectでdefaultとbreakを使おう
 
