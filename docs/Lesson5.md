@@ -321,6 +321,52 @@
       ```
 
 ## 5-4 pipelineによる並行処理
+- 並行処理のプログラムの作り方はさまざまですが、その中の一つにpipeline(パイプライン)というものがある。
+- Goでは、複数のチャネルを用意し、順番に値を渡していくような並行処理をpiplineという。
+
+### 5-4-1 pipelineを使って並行処理をしよう
+- 並行処理の方法の一つである**pipeline**パターン。
+- main関数からゴルーチンを1つ立ち上げ、最初に立ち上げたゴルーチンが処理する。処理した結果をチャネルに渡して次のゴルーチンで処理する。これを繰り返して最終結果をmain関数に渡す。
+  ```go
+  package main
+
+  import "fmt"
+
+  func producer(first chan int) {
+    defer close(first)
+    for i := 0; i < 10; i++ {
+      first <- i
+    }
+  }
+
+  func multi2(first chan int, second chan int) {
+    defer close(second)
+    for i := range first {
+      second <- i * 2
+    }
+  }
+
+  func multi4(second chan int, third chan int) {
+    defer close(third)
+    for i := range second {
+      third <- i * 4
+    }
+  }
+
+  func main() {
+    first := make(chan int)
+    second := make(chan int)
+    third := make(chan int)
+
+    go producer(first)
+    go multi2(first, second)
+    go multi4(second, third)
+    for result := range third {
+      fmt.Println(result)
+    }
+  }
+
+  ```
 
 ## 5-5 selectでチャネルに応じた処理をしよう
 
