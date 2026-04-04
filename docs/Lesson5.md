@@ -524,3 +524,82 @@
   ```
 
 ## 5-7 sync.Mutexを使ったゴルーチンの処理
+- 複数のゴルーチン間でのデータのやりとりにはチャネルを使ってきました。
+- マップなどの値を異なるゴルーチンから読み込んだり、書き込んだりする場合、場合によっては同じタイミングで読み書きをしてしまうためエラーが起こりやすくなる。
+- そのため、同時に読み書きが起こらないようにプログラムを調整する必要がある
+- ここでは、sync.Mutexを使ってことなるゴルーチンから値を読み書きするための方法について記載する。
+
+### 5-7-1 異なるゴルーチンから同じ構造体を書き換えよう
+
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "time"
+  )
+
+  func main() {
+    c := make(map[string]int)
+    go func() {
+      for i := 0; i < 10; i++ {
+        c["key"] += 1
+      }
+    }()
+    go func() {
+      for i := 0; i < 10; i++ {
+        c["key"] += 1
+      }
+    }()
+
+    time.Sleep(1 * time.Second)
+    fmt.Println(c, c["key"])
+  }
+
+  ```
+- **sync.Mutex**
+  - 2つのゴルーチンから1つのマップを読み込んだり書き換えたりしようとすると、問題が起きるため、**sync.Mutex**を使う必要がある
+
+    ```go
+    package main
+
+    import (
+      "fmt"
+      "sync"
+      "time"
+    )
+
+    type Counter struct {
+      v   map[string]int
+      mux sync.Mutex
+    }
+
+    func (c *Counter) Inc(key string) {
+      c.mux.Lock()
+      defer c.mux.Unlock()
+      c.v[key]++
+    }
+
+    func (c *Counter) Value(key string) int {
+      c.mux.Lock()
+      defer c.mux.Unlock()
+      return c.v[key]
+    }
+
+    func main() {
+      c := Counter{v: make(map[string]int)}
+      go func() {
+        for i := 0; i < 10; i++ {
+          c.Inc("Key")
+        }
+      }()
+      go func() {
+        for i := 0; i < 10; i++ {
+          c.Inc("key")
+        }
+      }()
+      time.Sleep(1 * time.Second)
+      fmt.Println(c.v, c.Value("Key"))
+    }
+
+    ```
