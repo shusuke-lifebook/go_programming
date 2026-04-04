@@ -153,7 +153,16 @@
 ### 6-5-2 godocでブラウザ上のドキュメントを確認しよう
 - go docと似たコマンドに、**godoc**がある。godocは説明文を書いたコードをローカルのWebページで実行することができる
 - godocは1.12まで利用可能であったが、それ以降のバージョンでは非推奨。
-
+- 以下のツールを利用することにする
+  - [Arrow](https://github.com/navid-m/arrow)
+  - [doc2go](https://abhinav.github.io/doc2go/)
+  - インストール
+    - Arrow 
+      - コマンド: go install github.com/navid-m/arrow@latest
+      - コマンド：arrow -v
+    - doc2go 
+      - コマンド: go install go.abhg.dev/doc2go@latest
+      - コマンド：doc2go -version
 
 
 
