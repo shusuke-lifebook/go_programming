@@ -420,5 +420,107 @@
   ```
 
 ## 5-6 selectでdefaultとbreakを使おう
+- selectでは、チャネルに応じてそれぞれの処理を作る。
+- どのチャネルでもないときの処理はdefaultを使って書くことができる
+- selectを使った処理におけるdefaultの使用例を記述する
+- また、for文とselect文を使うときにラベルを使って途中で処理を抜ける方法について記載する
+
+### 5-6-1 selectとdefaultでどのチャネルでもない処理を書こう
+- selectで**default**を使うと、どのチャネルでもないときに実行したい処理を書ける
+- ここでは、「A Tour of Go」というGoの公式チュートリアルで公開されているコードを例に記載する。
+  - **time.Tick**と**time.After**は、それぞれ設定した時間に値が送信されるチャネルを返す。
+    - time.Tickは設定した時間ごとに周期的にチャネルを送信する
+    - time.Afterは設定した時間が経過したタイミングで値を送信する
+
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "time"
+  )
+
+  func main() {
+    tick := time.Tick(100 * time.Millisecond)
+    boom := time.After(500 * time.Millisecond)
+    for {
+      select {
+      case <-tick:
+        fmt.Println("tick.")
+      case <-boom:
+        fmt.Println("BOOM!")
+        return
+      default:
+        fmt.Println("    .")
+        time.Sleep(50 * time.Millisecond)
+      }
+    }
+  }
+
+  ```
+
+### 5-6-2 for文とselect文を途中で抜けよう
+- 例えば、for文の外に、「fmt.Println("##########")」と書いて実行しても先ほどの表示結果は変わらない
+- これは、**returnの時点で処理が終了**してしまい、そのあとの「fmt.Println("##########")」は実行されない
+
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "time"
+  )
+
+  func main() {
+    tick := time.Tick(100 * time.Millisecond)
+    boom := time.After(500 * time.Millisecond)
+    for {
+      select {
+      case <-tick:
+        fmt.Println("tick.")
+      case <-boom:
+        fmt.Println("BOOM!")
+        return
+      default:
+        fmt.Println("    .")
+        time.Sleep(50 * time.Millisecond)
+      }
+    }
+    fmt.Println("##########")
+  }
+
+  ```
+- **returnの代わりにbreakを用いる**
+  - selectの中でreturnの代わりにbreakを書いた場合、for文から抜け出せず無限ループになってしまうので注意が必要 
+
+- **ラベルを使用してforループを抜ける**
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "time"
+  )
+
+  func main() {
+    tick := time.Tick(100 * time.Millisecond)
+    boom := time.After(500 * time.Millisecond)
+  OuterLoop:
+    for {
+      select {
+      case <-tick:
+        fmt.Println("tick.")
+      case <-boom:
+        fmt.Println("BOOM!")
+        break OuterLoop
+      default:
+        fmt.Println("    .")
+        time.Sleep(50 * time.Millisecond)
+      }
+    }
+    fmt.Println("##########")
+  }
+
+  ```
 
 ## 5-7 sync.Mutexを使ったゴルーチンの処理
