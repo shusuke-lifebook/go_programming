@@ -26,6 +26,12 @@
   //   "goimports": "gci"
   // },
 
+  //  --- Code Runner 設定 ---
+  "code-runner.executorMap": {
+    "go": "cd $dir && go run ."
+  },
+  "code-runner.runInTerminal": true,
+
   // --- ファイル関連 ---
   "files.exclude": {
     "**/bin": true,
