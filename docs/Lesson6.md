@@ -163,6 +163,20 @@
     - doc2go 
       - コマンド: go install go.abhg.dev/doc2go@latest
       - コマンド：doc2go -version
+  - 使い方
+    - Arrow
+      ```
+      arrow .
+      open docs/index.html   # macOS
+      xdg-open docs/index.html  # Linux
+      start docs/index.html     # Windows
+      ```
+    - doc2go
+      ```
+      doc2go -out www/ ./...
+      ```
+      → www/ を GitHub Pages に置くだけで公開できる。
+
 
 
 
