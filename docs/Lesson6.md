@@ -83,8 +83,47 @@
 - ここでは、gofmtというコードを修正するためのツールについて記載する。
 
 ### 6-3-1 gofmtでコードの形式を整えよう
+- **gofmt**は、Goのコードを書き方を修正するツールです。
+  - 「gofmt math.go」(gofmt 修正するファイル名)で実行すると整形したコードが表示される。
+  - 「gofmt -w math.go」のように-wをつけると修正したコードで上書きしてくれる。
 
 ## 6-4 サードパーティのパッケージを利用しよう
+- Goにはさまざまな機能を持つ標準パッケージがあります。
+- 開発したい機能によっては、サードパーティのパッケージを活用する場合もあります。
+- ここでは、サードパーティのパッケージをインストールして使用する方法について説明する。
+
+### 6-4-1 サードパーティのパッケージのインストール
+- [第三者が公開しているパッケージはこちらから検索できます](https://pkg.go.dev/)
+- 「talib」という株価を分析するサードパーティのパッケージをインストールする
+- 「quote」という株価などの情報をダウンロードするパッケージをインストールする
+- Goでは、**go get**というコマンドでサードパーティのパッケージをインストールする
+  - go get github.com/markcheno/go-talib
+  - go get github.com/markcheno/go-quote@latest
+    ```go
+    package main
+
+    import (
+      "fmt"
+
+      "github.com/markcheno/go-quote"
+      "github.com/markcheno/go-talib"
+    )
+
+    func main() {
+      // Coinbase からデータ取得（BTC-USD の例）
+      spy, err := quote.NewQuoteFromCoinbase("BTC-USD", "2021-04-01", "2021-04-04", quote.Daily)
+      if err != nil {
+        panic(err)
+      }
+
+      fmt.Print(spy.CSV())
+
+      // RSI 計算
+      rsi2 := talib.Rsi(spy.Close, 2)
+      fmt.Println(rsi2)
+    }
+
+    ```
 
 ## 6-5 ドキュメントを作成しよう
 
