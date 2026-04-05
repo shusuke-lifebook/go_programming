@@ -177,7 +177,49 @@
       ```
       → www/ を GitHub Pages に置くだけで公開できる。
 
-
-
-
 ## 6-6 便利な標準パッケージを活用しよう
+- 標準パッケージでの中からよく使う2つのパッケージを紹介
+  - time   : 時間を扱うパッケージ
+  - regexp : 正規表現を扱うパッケージ
+
+### 6-6-1 timeで時間に関するコードを書こう
+- [time](https://pkg.go.dev/time)
+- **time.Now**で現在時刻を表示する
+- RFC3339の形式にする場合、次のようにFormatメソッドで「time.RFC3339」を指定する
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "time"
+  )
+
+  func main() {
+    t := time.Now()
+    fmt.Println(t)
+    fmt.Println(t.Format(time.RFC3339))
+  }
+
+  ```
+- **年月日や時刻を単独で表示する**
+  - t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second()でそれぞれ年、月、日付、時、分、秒を表示できる
+    ```go
+    func main() {
+      t := time.Now()
+      fmt.Println(t)
+      fmt.Println(t.Format(time.RFC3339))
+      fmt.Println(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
+    }
+
+    ```
+### 6-6-2 regexpで正規表現のコードを書こう
+- 正規表現を扱うパッケージである**regexp**について記載する。
+- 正規表現とは、条件に当てはまる文字列検索するときに使われる表現で、次のような正規表現がある
+
+  | 正規表現の例 | 意味                                 |
+  | :----------- | :----------------------------------- |
+  | [a-z]        | aからzまでの任意の1文字              |
+  | a+           | aという文字列が1文字以上連続する部分 |
+  | a\|b\|c      | a、b、cのいずれかの文字              |
+  | ^a           | 先頭がaではじまる文字列              |
+  | a$           | 末尾がaで終わる文字列                |
