@@ -223,3 +223,72 @@
   | a\|b\|c      | a、b、cのいずれかの文字              |
   | ^a           | 先頭がaではじまる文字列              |
   | a$           | 末尾がaで終わる文字列                |
+
+- **MatchString関数**
+  - 正規表現が文字列に一致していればtrue/そうでなければfalseを返す。
+    ```go
+    package main
+
+    import (
+      "fmt"
+      "regexp"
+    )
+
+    func main() {
+      match, _ := regexp.MatchString("a([a-z]+)e", "apple")
+      fmt.Println(match)
+    }
+
+    ```
+- **MustCompile関数**
+  - 正規表現に使用するregexpオブジェクトを返す。
+    ```go
+    package main
+
+    import (
+      "fmt"
+      "regexp"
+    )
+
+    func main() {
+      r := regexp.MustCompile("a([a-z]+)e")
+      ms := r.MatchString("apple")
+      fmt.Println(ms)
+    }
+
+    ```
+- **FindStringメソッド**
+  - **FindStringメソッド**は、正規表現に一致する最も左側の文字列を返す。
+    ```go
+    package main
+
+    import (
+      "fmt"
+      "regexp"
+    )
+
+    func main() {
+      r2 := regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
+      fs := r2.FindString("/view/test")
+      fmt.Println(fs)
+    }
+
+    ```
+- **FindStringSubmatchメソッド**
+  - **FindStringSubmatchメソッド**は、正規表現に一致する文字列ともに正規表現で()で囲まれた部分に一致する部分もあわせて、スライスで返す。
+
+    ```go
+    package main
+
+    import (
+      "fmt"
+      "regexp"
+    )
+
+    func main() {
+      r2 := regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
+      fss := r2.FindStringSubmatch("/view/test")
+      fmt.Println(fss, fss[0], fss[1], fss[2])
+    }
+
+    ```
