@@ -173,8 +173,41 @@
 
     ```
 
+### 7-1-3 POSTリクエストを送信しよう
+- POSTリクエストは、http.NewRequestでリクエストを作成する際に、メソッドを"POST"に指定する。
+- POSTの場合はリクエストボディにデータを入れて渡す。
+
+  ```go
+  package main
+
+  import (
+    "bytes"
+    "fmt"
+    "io"
+    "net/http"
+    "net/url"
+  )
+
+  func main() {
+    base, _ := url.Parse("http://example.com")
+    reference, _ := url.Parse("/test?a=1&b=2")
+    endpoint := base.ResolveReference(reference).String()
+    fmt.Println(endpoint)
+    req, _ := http.NewRequest("POST", endpoint, bytes.NewBuffer([]byte("password")))
+
+    var client *http.Client = &http.Client{}
+    resp, _ := client.Do(req)
+    body, _ := io.ReadAll(resp.Body)
+    fmt.Println(string(body))
+  }
+
+  ```
 
 ## 7-2 JSONと構造体を相互に変換しよう
+- JSONとは、「JavaScript Object Notation」の略で、Web上でデータをやり取りする際によく用いられるデータの記述形式です。
+- encoding/jsonという標準パッケージを用いることで、JSONのデータをGoの構造体として扱い処理することが可能。
+
+### 7-2-1 json.Unmarshal関数でJSONを構造体に変換しよう
 
 ## 7-3 データベースを利用しよう
 
