@@ -208,6 +208,103 @@
 - encoding/jsonという標準パッケージを用いることで、JSONのデータをGoの構造体として扱い処理することが可能。
 
 ### 7-2-1 json.Unmarshal関数でJSONを構造体に変換しよう
+- **encoding/json**はJSONを扱う標準パッケージです。
+- JSONのデータはbyteで作成する。
+- **json.Unmarshal関数**に変数bとポインタ変数pを渡す。
+
+  ```go
+  package main
+
+  import (
+    "encoding/json"
+    "fmt"
+  )
+
+  type Person struct {
+    Name      string
+    Age       int
+    Nicknames []string
+  }
+
+  func main() {
+    b := []byte(`{"name":"mike","age":20,"nicknames":["a","b","c"]}`)
+    var p Person
+
+    if err := json.Unmarshal(b, &p); err != nil {
+      fmt.Println(err)
+    }
+    fmt.Println(p.Name, p.Age, p.Nicknames)
+  }
+
+  ```
+
+### 7-2-2 json.Marshal関数で構造体をJSONに変換しよう
+- 構造体のデータをJSONに変換するには、**json.Marshal**関数を使う。
+
+  ```go
+  package main
+
+  import (
+    "encoding/json"
+    "fmt"
+  )
+
+  type Person struct {
+    Name      string
+    Age       int
+    Nicknames []string
+  }
+
+  func main() {
+    b := []byte(`{"name":"mike","age":20, "nicknames":["a","b","c"]}`)
+    var p Person
+    if err := json.Unmarshal(b, &p); err != nil {
+      fmt.Println(err)
+    }
+    fmt.Println(p.Name, p.Age, p.Nicknames)
+
+    v, _ := json.Marshal(p)
+    fmt.Println(string(v))
+  }
+
+  ```
+
+- **JSONに変換する際のキー名を指定しよう**
+**構造体のフィールド名がJSONのキーに変換されるときの名前を指定することができる**
+
+  ```go
+  package main
+
+  import (
+    "encoding/json"
+    "fmt"
+  )
+
+  type Person struct {
+    Name      string   `json:"name"`
+    Age       int      `json:"age"`
+    Nicknames []string `json:"nicknames"`
+  }
+
+  func main() {
+    b := []byte(`{"name":"micke","age":20,"nicknames":["a","b","c"]}`)
+    var p Person
+
+    if err := json.Unmarshal(b, &p); err != nil {
+      fmt.Println(err)
+    }
+    fmt.Println(p.Name, p.Age, p.Nicknames)
+
+    v, _ := json.Marshal(p)
+    fmt.Println(string(v))
+  }
+
+  ```
+
+- **JSONでの型を変更しよう**
+  - 構造体とJSONとの間で変換を行うときに、違う型として扱うことができる
+  - 「json:"age,string"」とした場合、json.Marshal関数でJSONに変換したときのageの値はstring型になる
+
 
 ## 7-3 データベースを利用しよう
 
