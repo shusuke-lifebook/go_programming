@@ -305,6 +305,129 @@
   - 構造体とJSONとの間で変換を行うときに、違う型として扱うことができる
   - 「json:"age,string"」とした場合、json.Marshal関数でJSONに変換したときのageの値はstring型になる
 
+    ```go
+    package main
+
+    import (
+      "encoding/json"
+      "fmt"
+    )
+
+    type Person struct {
+      Name      string   `json:"name"`
+      Age       int      `json:"age,string"`
+      Nicknames []string `json:"nicknames"`
+    }
+
+    func main() {
+      b := []byte(`{"name":"micke","age":"20","nicknames":["a","b","c"]}`)
+      var p Person
+
+      if err := json.Unmarshal(b, &p); err != nil {
+        fmt.Println(err)
+      }
+      fmt.Println(p.Name, p.Age, p.Nicknames)
+
+      v, _ := json.Marshal(p)
+      fmt.Println(string(v))
+    }
+
+    ```
+- **JSONに変換するときに非表示にしよう**
+  - 「`json:"-"`」としていると、そのフィールドはjson.Unmarshal関数やjson.Marshal関数での変換時にJSON側では無視される。
+
+    ```go
+    package main
+
+    import (
+      "encoding/json"
+      "fmt"
+    )
+
+    type Person struct {
+      Name      string   `json:"-"`
+      Age       int      `json:"age,string"`
+      Nicknames []string `json:"nicknames"`
+    }
+
+    func main() {
+      b := []byte(`{"name":"micke","age":"20","nicknames":["a","b","c"]}`)
+      var p Person
+
+      if err := json.Unmarshal(b, &p); err != nil {
+        fmt.Println(err)
+      }
+      fmt.Println(p.Name, p.Age, p.Nicknames)
+
+      v, _ := json.Marshal(p)
+      fmt.Println(string(v))
+    }
+
+    ```
+
+### 7-2-3 omitemptyでデフォルト値を省略しよう
+- **omitempty**を指定することでJSONに反映させず省略することが可能
+  ```go
+  package main
+
+  import (
+    "encoding/json"
+    "fmt"
+  )
+
+  type Person struct {
+    Name      string   `json:"-"`
+    Age       int      `json:"age,omitempty"`
+    Nicknames []string `json:"nicknames"`
+  }
+
+  func main() {
+    b := []byte(`{"name":"micke","age":0,"nicknames":["a","b","c"]}`)
+    var p Person
+
+    if err := json.Unmarshal(b, &p); err != nil {
+      fmt.Println(err)
+    }
+    fmt.Println(p.Name, p.Age, p.Nicknames)
+
+    v, _ := json.Marshal(p)
+    fmt.Println(string(v))
+  }
+  ```
+- **空の構造体にomitemptyを適用する**
+
+  ```go
+  package main
+
+  import (
+    "encoding/json"
+    "fmt"
+  )
+
+  type T struct {
+  }
+
+  type Person struct {
+    Name      string   `json:"name,omitempty"`
+    Age       int      `json:"age,omitempty"`
+    Nicknames []string `json:"nicknames,omitempty"`
+    T         *T       `json:"T,omitempty"`
+  }
+
+  func main() {
+    b := []byte(`{"name":"","age":20,"nicknames":[]}`)
+    var p Person
+
+    if err := json.Unmarshal(b, &p); err != nil {
+      fmt.Println(err)
+    }
+    fmt.Println(p.Name, p.Age, p.Nicknames)
+
+    v, _ := json.Marshal(p)
+    fmt.Println(string(v))
+  }
+
+  ```
 
 ## 7-3 データベースを利用しよう
 
