@@ -533,5 +533,317 @@
   ```
 
 ## 7-3 データベースを利用しよう
+- SQLiteを例に、簡単なリレーショナルデータベースとSQLの使い方を記載する。
+
+### 7-3-1 SQLiteを利用する準備をしよう
+- [go-sqlite3](https://github.com/mattn/go-sqlite3)というパッケージを使います
+  - go get github.com/mattn/go-sqlite3
+  - SQLでデータベースを操作するには、**database/sql**パッケージを使用する
+    - sql.Open関数でデータベースを開く
+    - SQL文を作る
+    - SQL文を実行する
+    - **Closeメソッド**でデータベースを閉じる
+
+    ```go
+    package main
+
+    import (
+      "database/sql"
+      "log"
+
+      _ "github.com/mattn/go-sqlite3"
+    )
+
+    var DbConnection *sql.DB
+
+    func main() {
+      DbConnection, _ := sql.Open("sqlite3", "./example.sql")
+      defer DbConnection.Close()
+      cmd := `CREATE TABLE IF NOT EXISTS person (
+        name STRING,
+        age INT
+      )`
+
+      _, err := DbConnection.Exec(cmd)
+      if err != nil {
+        log.Fatalln(err)
+      }
+    }
+
+    ```
+- **INSERT文でレコードを挿入しよう**
+  ```go
+  package main
+
+  import (
+    "database/sql"
+    "log"
+
+    _ "github.com/mattn/go-sqlite3"
+  )
+
+  var DbConnection *sql.DB
+
+  func main() {
+    DbConnection, _ := sql.Open("sqlite3", "./example.sql")
+    defer DbConnection.Close()
+    cmd := `CREATE TABLE IF NOT EXISTS person (
+      name STRING,
+      age INT
+    )`
+
+    _, err := DbConnection.Exec(cmd)
+    if err != nil {
+      log.Fatalln(err)
+    }
+
+    cmd = "INSERT INTO person (name, age) VALUES (?, ?)"
+    _, err = DbConnection.Exec(cmd, "Nancy", 20)
+
+    if err != nil {
+      log.Fatalln(err)
+    }
+  }
+
+  ```
+
+- **UPDATE文でレコードを更新しよう**
+  ```go
+  package main
+
+  import (
+    "database/sql"
+    "log"
+
+    _ "github.com/mattn/go-sqlite3"
+  )
+
+  var DbConnection *sql.DB
+
+  func main() {
+    DbConnection, _ := sql.Open("sqlite3", "./example.sql")
+    defer DbConnection.Close()
+    cmd := `CREATE TABLE IF NOT EXISTS person (
+      name STRING,
+      age INT
+    )`
+
+    _, err := DbConnection.Exec(cmd)
+    if err != nil {
+      log.Fatalln(err)
+    }
+
+    cmd = "UPDATE person SET age = ? WHERE name = ?"
+    _, err = DbConnection.Exec(cmd, 25, "Mike")
+
+    if err != nil {
+      log.Fatalln(err)
+    }
+  }
+
+  ```
+- **SELECT文で複数のレコードを取得しよう**
+
+  ```go
+  package main
+
+  import (
+    "database/sql"
+    "fmt"
+    "log"
+
+    _ "github.com/mattn/go-sqlite3"
+  )
+
+  var DbConnection *sql.DB
+
+  type Person struct {
+    Name string
+    Age  int
+  }
+
+  func main() {
+    DbConnection, _ := sql.Open("sqlite3", "./example.sql")
+    defer DbConnection.Close()
+    cmd := `CREATE TABLE IF NOT EXISTS person (
+      name STRING,
+      age INT
+    )`
+
+    _, err := DbConnection.Exec(cmd)
+    if err != nil {
+      log.Fatalln(err)
+    }
+
+    cmd = "SELECT * FROM person"
+    rows, err := DbConnection.Query(cmd)
+    defer rows.Close()
+    var pp []Person
+    for rows.Next() {
+      var p Person
+      err := rows.Scan(&p.Name, &p.Age)
+      if err != nil {
+        log.Println(err)
+      }
+      pp = append(pp, p)
+    }
+
+    for _, p := range pp {
+      fmt.Println(p.Name, p.Age)
+    }
+
+  }
+
+  ```
+
+- **SELECT文で1件のレコードを取得しよう**
+  - レコードを1件取得したい場合は、**QueryRowメソッド**を使用する
+
+    ```go
+    package main
+
+    import (
+      "database/sql"
+      "fmt"
+      "log"
+
+      _ "github.com/mattn/go-sqlite3"
+    )
+
+    var DbConnection *sql.DB
+
+    type Person struct {
+      Name string
+      Age  int
+    }
+
+    func main() {
+      DbConnection, _ := sql.Open("sqlite3", "./example.sql")
+      defer DbConnection.Close()
+      cmd := `CREATE TABLE IF NOT EXISTS person (
+        name STRING,
+        age INT
+      )`
+
+      _, err := DbConnection.Exec(cmd)
+      if err != nil {
+        log.Fatalln(err)
+      }
+
+      cmd = "SELECT * FROM person where age = ?"
+      row := DbConnection.QueryRow(cmd, 20)
+      var p Person
+      err = row.Scan(&p.Name, &p.Age)
+      if err != nil {
+        if err == sql.ErrNoRows {
+          log.Println("No row")
+        } else {
+          log.Println(err)
+        }
+      }
+      fmt.Println(p.Name, p.Age)
+    }
+
+    ```
+
+- **DELETE文でレコードを削除しよう**
+  ```go
+  package main
+
+  import (
+    "database/sql"
+    "log"
+
+    _ "github.com/mattn/go-sqlite3"
+  )
+
+  var DbConnection *sql.DB
+
+  type Person struct {
+    Name string
+    Age  int
+  }
+
+  func main() {
+    DbConnection, _ := sql.Open("sqlite3", "./example.sql")
+    defer DbConnection.Close()
+    cmd := `CREATE TABLE IF NOT EXISTS person (
+      name STRING,
+      age INT
+    )`
+
+    _, err := DbConnection.Exec(cmd)
+    if err != nil {
+      log.Fatalln(err)
+    }
+
+    cmd = "DELETE FROM person where name = ?"
+    _, err = DbConnection.Exec(cmd, "Nancy")
+    if err != nil {
+      log.Fatalln(err)
+    }
+  }
+
+  ```
+
+### 7-3-2 SQLインジェクションの例を確認しよう
+- 以下のプログラムを実行すると何も表示されない。
+- ターミナルからデータベースを確認すると、「Mr.X」のレコードが追加されている。
+- 意図しないSQLが実行されることを**SQLインジェクション**という。
+
+  ```go
+  package main
+
+  import (
+    "database/sql"
+    "fmt"
+    "log"
+
+    _ "github.com/mattn/go-sqlite3"
+  )
+
+  var DbConnection *sql.DB
+
+  type Person struct {
+    Name string
+    Age  int
+  }
+
+  func main() {
+    DbConnection, _ := sql.Open("sqlite3", "./example.sql")
+    defer DbConnection.Close()
+    cmd := `CREATE TABLE IF NOT EXISTS person (
+      name STRING,
+      age INT
+    )`
+
+    _, err := DbConnection.Exec(cmd)
+    if err != nil {
+      log.Fatalln(err)
+    }
+
+    tableName := "person; INSERT INTO person (name, age) VALUES ('Mr.X', 100)"
+    cmd = fmt.Sprintf("SELECT * FROM %s", tableName)
+    rows, _ := DbConnection.Query(cmd)
+    defer rows.Close()
+    var pp []Person
+    for rows.Next() {
+      var p Person
+      err := rows.Scan(&p.Name, &p.Age)
+      if err != nil {
+        log.Println(err)
+      }
+      pp = append(pp, p)
+    }
+    err = rows.Err()
+    if err != nil {
+      log.Fatalln(err)
+    }
+    for _, p := range pp {
+      fmt.Println(p.Name, p.Age)
+    }
+  }
+
+  ```
 
 ## 7-4 Webアプリケーションを作成しよう
