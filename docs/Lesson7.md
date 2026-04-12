@@ -917,3 +917,50 @@
   }
 
   ```
+
+### 7-4-3 Webサーバーを立ち上げよう
+- **http**パッケージを使い、Webサーバーの処理を作成する。
+- **http.ListenAndServe**関数でWebサーバーを立ち上げる。
+
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "log"
+    "net/http"
+    "os"
+  )
+
+  type Page struct {
+    Title string
+    Body  []byte
+  }
+
+  func (p *Page) save() error {
+    filename := p.Title + ".txt"
+    return os.WriteFile(filename, p.Body, 0600)
+  }
+
+  func loadPage(title string) (*Page, error) {
+    filename := title + ".txt"
+    body, err := os.ReadFile(filename)
+    if err != nil {
+      return nil, err
+    }
+    return &Page{Title: title, Body: body}, nil
+  }
+
+  func viewHandler(w http.ResponseWriter, r *http.Request) {
+    // /view/test
+    title := r.URL.Path[len("/view/"):]
+    p, _ := loadPage(title)
+    fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", p.Title, p.Body)
+  }
+
+  func main() {
+    http.HandleFunc("/view/", viewHandler)
+    log.Fatal(http.ListenAndServe(":8080", nil))
+  }
+
+  ```
