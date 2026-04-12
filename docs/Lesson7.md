@@ -847,3 +847,73 @@
   ```
 
 ## 7-4 Webアプリケーションを作成しよう
+- パソコンやスマホのブラウザから利用するWebページで動作しているWebアプリケーションは、これまで記載してきた、HTTPやJSON、データベースなどの処理を組み合わせて構成されている
+- シンプルにテキストデータを読み込み、GETリクエストとPOSTリクエストを処理するWebアプリケーションを例にして、基本的なWebアプリケーションのコードについて記載する
+
+### 7-4-1 テキストを編集して表示するアプリケーションを作ろう
+- GoでWebアプリケーションを作っていきます。
+- Goの公式ページを紹介されている[アプリケーション](https://go.dev/doc/articles/wiki)を例に記載する。
+
+### 7-4-2 OSパッケージでテキストファイルの読み込みをしよう
+- 最初にGoの標準パッケージOSパッケージを使ってテキストファイルに対して読み書きを行う処理を作っていきましょう
+- os.WriteFile関数でファイルにデータを書き込もう
+  ```go
+  package main
+
+  import "os"
+
+  type Page struct {
+    Title string
+    Body  []byte
+  }
+
+  func (p *Page) save() error {
+    filename := p.Title + ".txt"
+    return os.WriteFile(filename, p.Body, 0600)
+  }
+
+  func main() {
+    p1 := &Page{Title: "test", Body: []byte("This is a sample Page.")}
+    p1.save()
+  }
+
+  ```
+
+- **os.ReadFile関数でファイルからデータを読み込む**
+
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "os"
+  )
+
+  type Page struct {
+    Title string
+    Body  []byte
+  }
+
+  func (p *Page) save() error {
+    filename := p.Title + ".txt"
+    return os.WriteFile(filename, p.Body, 0600)
+  }
+
+  func loadPage(title string) (*Page, error) {
+    filename := title + ".txt"
+    body, err := os.ReadFile(filename)
+    if err != nil {
+      return nil, err
+    }
+    return &Page{Title: title, Body: body}, nil
+  }
+
+  func main() {
+    p1 := &Page{Title: "test", Body: []byte("This is a sample Page.")}
+    p1.save()
+
+    p2, _ := loadPage(p1.Title)
+    fmt.Println(string(p2.Body))
+  }
+
+  ```
