@@ -71,5 +71,25 @@
     },
     "editor.renderWhitespace": "boundary",
     "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+  },
+
+  // Djangoのプラグインの有効でhtmlがdjとなるのを防ぐ対応
+  "vsicons.associations.files": [
+    {
+      "icon": "html",
+      "extensions": ["html"],
+      "format": "svg"
+    },
+    {
+      "icon": "django",
+      "extensions": ["djhtml", "jinja"],
+      "format": "svg"
+    }
+  ],
+  // Emmetの設定
+  "emmet.includeLanguages": {
+    "html": "html",
+    "django-html": "html",
+    "jinja-html": "html"
   }
 }

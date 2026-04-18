@@ -964,3 +964,19 @@
   }
 
   ```
+
+### 7-4-4 HTMLテンプレートを利用しよう
+- **text/template**パッケージを使って読み込んでいこう
+  ```go
+  func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
+    t, _ := template.ParseFiles(tmpl + ".html")
+    t.Execute(w, p)
+  }
+
+  func viewHandler(w http.ResponseWriter, r *http.Request) {
+    // /view/test
+    title := r.URL.Path[len("/view/"):]
+    p, _ := loadPage(title)
+    renderTemplate(w, "view", p)
+  }
+  ```
