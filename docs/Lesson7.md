@@ -997,3 +997,19 @@
   }
 
   ```
+
+### 7-4-6 Webアプリケーションのコードを効率化しよう
+- template.Must関数でtemplate.ParseFiles関数の引数に「edit.html」、「view.html」を指定する。
+- ExecuteTemplateメソッドでページ内容をテンプレートに反映し、もしエラーがあれば、http.StatusInternalServerErrorを返す。
+
+  ```go
+  var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
+
+  func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
+    err := templates.ExecuteTemplate(w, tmpl+".html", p)
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
+  }
+  ```
+
