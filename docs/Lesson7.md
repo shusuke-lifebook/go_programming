@@ -980,3 +980,20 @@
     renderTemplate(w, "view", p)
   }
   ```
+
+### 7-4-5 Webページからの入力内容をファイルに保存しよう
+  ```go
+  func saveHandler(w http.ResponseWriter, r *http.Request) {
+    // /save/test
+    title := r.URL.Path[len("/save/"):]
+    body := r.FormValue("body")
+    p := &Page{Title: title, Body: []byte(body)}
+    err := p.save()
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
+    }
+    http.Redirect(w, r, "/view/"+title, http.StatusFound)
+  }
+
+  ```
