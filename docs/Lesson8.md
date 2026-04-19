@@ -56,6 +56,11 @@
   - oapi-codegenの実行
     - oapi-codegen --config=./api/config.yaml ./api/openapi.yaml
 
+### 8-2-2 ロギングの設定を作成しよう
+- ロギングの設定を作成する
+- プロジェクトフォルダに「pkg」フォルダを作成し、その中にさらに「logger」フォルダを作成する。
+- 「logger.go」というファイルを作成してコードを記述する
+
 
 ## 8-3 モデルを実装しよう
 
