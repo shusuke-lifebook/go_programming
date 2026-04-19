@@ -9,3 +9,5 @@
   - [Ginkgo](https://onsi.github.io/ginko)
   - [GΩmega](https://onsi.github.io/gomega)
 - [A Tour of Go](https://go.dev/tour/concurrency/6)
+- [OpenAPI Specification - Version 3.1.0](https://swagger.io/specification/)
+- [OpenAPI](https://spec.openapis.org/)
