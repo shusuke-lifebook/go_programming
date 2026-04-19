@@ -11,3 +11,4 @@
 - [A Tour of Go](https://go.dev/tour/concurrency/6)
 - [OpenAPI Specification - Version 3.1.0](https://swagger.io/specification/)
 - [OpenAPI](https://spec.openapis.org/)
+- [zap](https://github.com/uber-go/zap)

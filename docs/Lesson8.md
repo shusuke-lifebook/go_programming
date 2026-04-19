@@ -60,7 +60,141 @@
 - ロギングの設定を作成する
 - プロジェクトフォルダに「pkg」フォルダを作成し、その中にさらに「logger」フォルダを作成する。
 - 「logger.go」というファイルを作成してコードを記述する
+- 「zap」という高速で構造化されたロギングパッケージを利用する
 
+  ```go
+  // Package logger provides logging functionality using zap.
+  package logger
+
+  import (
+    "os"
+
+    "go.uber.org/zap"
+  )
+
+  var (
+    ZapLogger        *zap.Logger
+    zapSugaredLogger *zap.SugaredLogger
+  )
+
+  func init() {
+    cfg := zap.NewProductionConfig()
+    logFile := os.Getenv("APP_LOG_FILE")
+    if logFile != "" {
+      cfg.OutputPaths = []string{"stderr", "logFile"}
+    }
+
+    ZapLogger = zap.Must(cfg.Build())
+    if os.Getenv("APP_ENV") == "development" {
+      ZapLogger = zap.Must(zap.NewDevelopment())
+    }
+    zapSugaredLogger = ZapLogger.Sugar()
+  }
+
+  func Sync() {
+    err := zapSugaredLogger.Sync()
+    if err != nil {
+      zap.Error(err)
+    }
+  }
+
+  func Info(msg string, keysAndValues ...interface{}) {
+    zapSugaredLogger.Infow(msg, keysAndValues...)
+  }
+
+  func Debug(msg string, keysAndValues ...interface{}) {
+    zapSugaredLogger.Debugw(msg, keysAndValues...)
+  }
+
+  func Warn(msg string, keysAndValues ...interface{}) {
+    zapSugaredLogger.Warnw(msg, keysAndValues...)
+  }
+
+  func Error(msg string, keysAndValues ...interface{}) {
+    zapSugaredLogger.Errorw(msg, keysAndValues...)
+  }
+
+  func Fatal(msg string, keysAndValues ...interface{}) {
+    zapSugaredLogger.Fatalw(msg, keysAndValues...)
+  }
+
+  func Panic(msg string, keysAndValues ...interface{}) {
+    zapSugaredLogger.Panicw(msg, keysAndValues...)
+  }
+
+  ```
+
+### 8-2-3 アプリケーションの設定を作成しよう
+- Goの環境変数などの設定を読み取るためのコードを作成する。
+- プロジェクトフォルダに「configs」フォルダを作り、その中に「config.go」というファイルを作成する。
+- **os.LookupEnv関数**を利用して、環境変数の値と存在を確認し
+  - 環境変数の値が存在する場合、その値を利用。
+  - 環境変数の値が存在しない場合、デフォルト値を利用。
+
+    ```go
+    // Package configs provides utility functions for configuration management, such as retrieving environment variables with default values.
+    package configs
+
+    import (
+      "go-api-arch-mvc-template/pkg/logger"
+      "os"
+      "strconv"
+
+      "go.uber.org/zap"
+    )
+
+    func GetEnvDefault(key, defVal string) string {
+      val, err := os.LookupEnv(key)
+      if !err {
+        return defVal
+      }
+      return val
+    }
+
+    type ConfigList struct {
+      Env                 string
+      DBHost              string
+      DBPort              int
+      DBDriver            string
+      DBName              string
+      DBUser              string
+      DBPassword          string
+      APICorsAllowOrigins []string
+    }
+
+    func (c *ConfigList) IsDevelopment() bool {
+      return c.Env == "development"
+    }
+
+    var Config ConfigList
+
+    func LoadEnv() error {
+      DBPort, err := strconv.Atoi(GetEnvDefault("MYSQL_PORT", "3306"))
+      if err != nil {
+        return err
+      }
+
+      Config = ConfigList{
+        Env:                 GetEnvDefault("APP_ENV", "development"),
+        DBDriver:            GetEnvDefault("DB_DRIVER", "mysql"),
+        DBHost:              GetEnvDefault("DB_HOST", "0.0.0.0"),
+        DBPort:              DBPort,
+        DBUser:              GetEnvDefault("DB_USER", "app"),
+        DBPassword:          GetEnvDefault("DB_PASSWORD", "password"),
+        DBName:              GetEnvDefault("DB_NAME", "api_database"),
+        APICorsAllowOrigins: []string{"http://0.0.0.0:8001"},
+      }
+      return nil
+    }
+
+    func init() {
+      if err := LoadEnv(); err != nil {
+        logger.Error("Failed to load env: ", zap.Error(err))
+        panic(err)
+      }
+    }
+
+    ```
 
 ## 8-3 モデルを実装しよう
 
