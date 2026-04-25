@@ -12,3 +12,4 @@
 - [OpenAPI Specification - Version 3.1.0](https://swagger.io/specification/)
 - [OpenAPI](https://spec.openapis.org/)
 - [zap](https://github.com/uber-go/zap)
+- [GORM](https://gorm.io/ja_JP/docs/index.html)
