@@ -383,6 +383,27 @@
       ```
 
 ### 8-3-2 Categoryモデルを作成しよう
+- categoriesテーブルに対応したCategoryモデルを作成する
+- 構造体Categoryはint型のIDとstring型のNameという二つのフィールドを持つ。
+- 変数DBの**FirstOrCreateメソッド**を実行する
+  ```go
+  package models
+
+  type Category struct {
+    ID   int
+    Name string
+  }
+
+  func GetOrCreateCategory(name string) (*Category, error) {
+    var category Category
+    tx := DB.FirstOrCreate(&category, Category{Name: name})
+    if tx.Error != nil {
+      return nil, tx.Error
+    }
+    return &category, nil
+  }
+
+  ```
 
 ## 8-4 コントローラを実装しよう
 
