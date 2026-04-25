@@ -196,6 +196,116 @@
 
     ```
 
+### 8-2-4 データベースの設定をしよう
+- **MySQL**というデータベースを使用してデータを保存していく
+- **init.sql**の作成
+  - external-apps/db
+    ```sql
+    CREATE DATABASE IF NOT EXISTS api_database;
+
+    USE api_database;
+
+    CREATE TABLE albums (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        release_date DATE,
+        category_id INT,
+        title VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE categories (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(10),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    ```
+- **MySQLの立ち上げ**
+  - **Docker**を使用してMySQLを立ち上げる
+  - Dockerを利用することで、**コンテナ**と呼ばれる仮想環境を作成することができる
+  - **Docker Compose**というツールで、複数のコンテナを一括で起動および管理も可能。
+- docker-compose.yaml
+  ```yaml
+  services:
+    mysql:
+      image: mysql:8.0
+      container_name: mysql
+      ports:
+        - 3306:3306
+      environment:
+        MYSQL_USER: app
+        MYSQL_PASSWORD: password
+        MYSQL_DATABASE: api_database
+        MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      healthcheck:
+        test:
+          [
+            "CMD",
+            "mysqladmin",
+            "ping",
+            "-h",
+            "localhost",
+            "-u",
+            "root",
+            "-p$MYSQL_ROOT_PASSWORD",
+          ]
+        interval: 3s
+        timeout: 5s
+        retries: 5
+      # restart: always
+      restart: no
+      volumes:
+        - ./external-apps/db/:/docker-entrypoint-initdb.d
+      networks:
+        - api-network
+    mysql-cli:
+      image: mysql:8.0
+      command: mysql -hmysql -uapp -ppassword api_database
+
+      depends_on:
+        mysql:
+          condition: service_healthy
+      networks:
+        - api-network
+  networks:
+    api-network:
+      driver: bridge
+
+  ```
+  - mysqlの起動
+    - docker compose up -d
+  - mysqlへの接続
+    - docker compose run mysql-cli
+      ```console
+      docker compose run mysql-cli
+      WARN[0000] The "MYSQL_ROOT_PASSWORD" variable is not set. Defaulting to a blank string. 
+      [+]  1/1t 1/11
+      ✔ Container mysql Running                                                                                                     0.0s
+      Container mysql Waiting 
+      Container mysql Healthy 
+      Container go-api-arch-mvc-template-mysql-cli-run-efda2e2a4a35 Creating 
+      Container go-api-arch-mvc-template-mysql-cli-run-efda2e2a4a35 Created 
+      mysql: [Warning] Using a password on the command line interface can be insecure.
+      Reading table information for completion of table and column names
+      You can turn off this feature to get a quicker startup with -A
+
+      Welcome to the MySQL monitor.  Commands end with ; or \g.
+      Your MySQL connection id is 26
+      Server version: 8.0.45 MySQL Community Server - GPL
+
+      Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+      Oracle is a registered trademark of Oracle Corporation and/or its
+      affiliates. Other names may be trademarks of their respective
+      owners.
+
+      Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+      mysql> 
+      ```
+  - MySQLから抜ける
+    - docker compose down
+
 ## 8-3 モデルを実装しよう
 
 
