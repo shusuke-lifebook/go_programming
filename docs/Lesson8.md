@@ -459,6 +459,26 @@
 
 ### 8-3-4 Albumモデルを作成しよう
 - 「app/models/」に「album.go」を作成し、albumsテーブルに対応するコードを作成していく
+- アルバムの情報を保持する構造体Albumは、次のような5つのフィールドを持つ
+
+| フィールド  | 型          | 説明                   |
+| :---------- | :---------- | :--------------------- |
+| ID          | int型       | アルバムのID           |
+| Title       | string型    | アルバムのタイトル     |
+| ReleaseDate | time.Time型 | アルバムのリリース日   |
+| CategoryID  | int型       | アルバムのカテゴリーID |
+| Category    | *Category型 | アルバムのカテゴリー   |
+
+- **経過年数を表すAnniversaryメソッド**
+- **構造体をJSONに変換するMarshalJSONメソッド**
+- **アルバムを作成するCreateAlbum関数**
+  - \*gorm.DB型の**Createメソッド**でデータベースに保存する
+- **アルバムの情報を取得するGetAlbum関数**
+  - \*gorm.DB型の**Preloadメソッド**でカテゴリを取得しておき、Firstメソッドで引数に指定したIDで検索して最初のレコードを返す
+- **アルバムを保持するSaveメソッド**
+  - \*gorm.DB型の**Saveメソッド**でデータベースを更新する
+- **アルバムを削除するDeleteメソッド**
+  - \*gorm.DB型の**Whereメソッド**でレコードを検索して、**Deleteメソッド**で該当するレコードを削除する
 
   ```go
   package models
