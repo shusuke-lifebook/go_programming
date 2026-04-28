@@ -577,6 +577,104 @@
 
 ### 8-4-1 Albumコントローラを作成しよう
 - プロジェクトフォルダに「controllers」というフォルダを作成し、album.goにコードを書いていく
+- 空の構造体としてAlbumHandler型を定義する
+  - **ハンドラー**： HTTPリクエストを受け取ってレスポンスを返す処理を担当する
+- **CreateAlbumメソッド**
+  - アルバムを作成するリクエストがあったときに呼び出されるメソッド
+  - リクエストやレスポンスなどの情報を保持する **\*gin.Context型**の引数を受け取る
+- **GetAlbumByIdメソッド**
+  - GetAlbumIdメソッドは、指定したIDのアルバム情報を取得するリクエストがあったときに呼び出されるメソッドです。
+- **UpdateAlbumByIdメソッド**
+  - UpdateAlbumByIdメソッドは、指定したIDのアルバムを更新するリクエストがあったときに呼び出されるメソッドです。
+- **DeleteAlbumByIdメソッド**
+  - DeleteAlbumByIdメソッドは、指定したIDでアルバムを削除するリクエストがあったときに呼び出されるメソッドです。
+
+  ```go
+  // Package controllers
+  package controllers
+
+  import (
+    "go-api-arch-mvc-template/api"
+    "go-api-arch-mvc-template/app/models"
+    "go-api-arch-mvc-template/pkg/logger"
+    "net/http"
+
+    "github.com/gin-gonic/gin"
+  )
+
+  type AlbumHandler struct{}
+
+  func (a *AlbumHandler) CreateAlbum(c *gin.Context) {
+    var requestBody api.CreateAlbumJSONRequestBody
+    if err := c.ShouldBindJSON(requestBody); err != nil {
+      logger.Warn(err.Error())
+      c.JSON(http.StatusBadRequest, api.ErrorResponse{Message: err.Error()})
+      return
+    }
+    createdAlbum, err := models.CreateAlbum(
+      requestBody.Title,
+      requestBody.ReleaseDate.Time,
+      string(requestBody.Category.Name))
+    if err != nil {
+      logger.Error(err.Error())
+      c.JSON(http.StatusInternalServerError, api.ErrorResponse{Message: err.Error()})
+      return
+    }
+    c.JSON(http.StatusCreated, createdAlbum)
+  }
+
+  func (a *AlbumHandler) GetAlbumById(c *gin.Context, ID int) {
+    album, err := models.GetAlbum(ID)
+    if err != nil {
+      logger.Error(err.Error())
+      c.JSON(http.StatusInternalServerError, api.ErrorResponse{Message: err.Error()})
+    }
+    c.JSON(http.StatusOK, album)
+  }
+
+  func (a *AlbumHandler) UpdateAlbumById(c *gin.Context, ID int) {
+    var requestBody api.UpdateAlbumByIdJSONRequestBody
+    if err := c.ShouldBindJSON(&requestBody); err != nil {
+      logger.Warn(err.Error())
+      c.JSON(http.StatusBadRequest, api.ErrorResponse{Message: err.Error()})
+      return
+    }
+
+    album, err := models.GetAlbum(ID)
+    if err != nil {
+      logger.Error(err.Error())
+      c.JSON(http.StatusInternalServerError, api.ErrorResponse{Message: err.Error()})
+      return
+    }
+
+    if requestBody.Category != nil {
+      album.Category.Name = string(requestBody.Category.Name)
+    }
+
+    if requestBody.Title != nil {
+      album.Title = *requestBody.Title
+    }
+
+    if err := album.Save(); err != nil {
+      logger.Error(err.Error())
+      c.JSON(http.StatusInternalServerError, api.ErrorResponse{Message: err.Error()})
+      return
+    }
+    c.JSON(http.StatusOK, album)
+  }
+
+  func (a *AlbumHandler) DeleteAlbumById(c *gin.Context, ID int) {
+    album := models.Album{ID: ID}
+
+    if err := album.Delete(); err != nil {
+      logger.Error(err.Error())
+      c.JSON(http.StatusInternalServerError, api.ErrorResponse{Message: err.Error()})
+      return
+    }
+    c.JSON(http.StatusNoContent, nil)
+  }
+
+  ```
 
 ## 8-5 ビューを実装しよう
 
