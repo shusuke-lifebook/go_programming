@@ -13,3 +13,5 @@
 - [OpenAPI](https://spec.openapis.org/)
 - [zap](https://github.com/uber-go/zap)
 - [GORM](https://gorm.io/ja_JP/docs/index.html)
+- [swag](https://github.com/swaggo/swag)
+- [gin-middleware](https://github.com/oapi-codegen/gin-middleware)

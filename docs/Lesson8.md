@@ -684,3 +684,5 @@
 
 ### 8-5-1 APIサーバーを起動しよう
 - プロジェクトフォルダにmain.goを作成し、サーバーの起動処理と合わせてビューを書いていく
+- [swag](https://github.com/swaggo/swag)
+  - go install github.com/swaggo/swag/cmd/swag@latest
