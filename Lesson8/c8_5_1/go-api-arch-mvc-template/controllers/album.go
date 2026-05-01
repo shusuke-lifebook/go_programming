@@ -14,7 +14,7 @@ type AlbumHandler struct{}
 
 func (a *AlbumHandler) CreateAlbum(c *gin.Context) {
 	var requestBody api.CreateAlbumJSONRequestBody
-	if err := c.ShouldBindJSON(requestBody); err != nil {
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		logger.Warn(err.Error())
 		c.JSON(http.StatusBadRequest, api.ErrorResponse{Message: err.Error()})
 		return

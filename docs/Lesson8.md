@@ -686,3 +686,24 @@
 - プロジェクトフォルダにmain.goを作成し、サーバーの起動処理と合わせてビューを書いていく
 - [swag](https://github.com/swaggo/swag)
   - go install github.com/swaggo/swag/cmd/swag@latest
+- サーバー起動時の処理としてデータベースに接続する
+- **github.com/gin-gonic/gin**パッケージ
+  - **Webフレームワーク**と呼ばれるWebアプリケーションを作成するためのパッケージです。
+  - **gin.Default**関数でHTTPリクエスト振り分けるための**ルーターを作成する**
+- **Swaggerの準備**
+  - api.GetSwagger関数で**Swagger**の仕様を取得する
+  - Swaggerとは、REST APIのドキュメントを生成するツールで、WebページからAPIの確認や実行ができる
+- **APIのルーティング(振り分け)**
+  - ルーターの**Groupメソッド**で「/api」ではじめるURLをグループ化し、さらにその中で「/api/v1」ではじまるAPIのサブグループを作成する。
+  - gin-middlewareパッケージの**OapiRequestValidator関数**によって、変数swaggerのAPI仕様に基づく**バリデーションを行う**
+- **サーバーの起動処理**
+  - 無名関数をゴルーチンとして実行する。**ListenAndServeメソッド**でサーバーを起動し、リクエストを待ち受ける
+- **サーバー終了処理**
+  - os.Signal型(オペレーティングシステムのシグナル)を受けるチャネルを作成する
+  - **os/signalパッケージのsignal.Notify関数で、SIGINTとSIGTERMのシグナルがあれば、quitチャネルに送信する**
+  - **context.WithTimeout関数**で2秒のタイムアウトを持つ**コンテキスト**(複数のゴルーチン間でキャンセルタイムアウトなどのシグナルを伝えるためのもの)
+- **APIサーバーの起動**
+  - APIの動作確認
+    - docker compose up -d
+    - go run main.go
+    - http://localhost:8080/swagger/index.html

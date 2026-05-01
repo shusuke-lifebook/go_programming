@@ -21,7 +21,7 @@ services:
           "root",
           "-p$MYSQL_ROOT_PASSWORD",
         ]
-      interval: 3s
+      interval: 30s
       timeout: 5s
       retries: 5
     # restart: always
