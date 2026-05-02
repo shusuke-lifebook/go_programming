@@ -707,3 +707,24 @@
     - docker compose up -d
     - go run main.go
     - http://localhost:8080/swagger/index.html
+
+### 8-5-2 APIの状態を確認する
+- APIが正常かどうかを確認するための**ヘルスチェック**の処理を追加する。
+- app/controllersフォルダにhealth.goを作成し、コードを書いていく
+  ```go
+  package controllers
+
+  import (
+    "net/http"
+
+    "github.com/gin-gonic/gin"
+  )
+
+  func Health(c *gin.Context) {
+    c.JSON(http.StatusOK, gin.H{
+      "status": "ok",
+    })
+  }
+  ```
+
+### 8-5-3 ミドルウェアを追加しよう
