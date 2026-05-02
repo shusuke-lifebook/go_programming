@@ -15,3 +15,6 @@
 - [GORM](https://gorm.io/ja_JP/docs/index.html)
 - [swag](https://github.com/swaggo/swag)
 - [gin-middleware](https://github.com/oapi-codegen/gin-middleware)
+- [cors](https://github.com/gin-contrib/cors)
+- [timeout](https://github.com/gin-contrib/timeout)
+- [zap](https://github.com/gin-contrib/zap)

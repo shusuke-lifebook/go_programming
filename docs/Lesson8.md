@@ -728,3 +728,10 @@
   ```
 
 ### 8-5-3 ミドルウェアを追加しよう
+
+- [cors](https://github.com/gin-contrib/cors)
+  - go get github.com/gin-contrib/cors
+- [timeout](https://github.com/gin-contrib/timeout)
+  - go get github.com/gin-contrib/timeout
+- [zap](https://github.com/gin-contrib/zap)
+  - go get github.com/gin-contrib/zap

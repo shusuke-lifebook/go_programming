@@ -4,6 +4,9 @@
   "gopls": {
     "usePlaceholders": true,
     "staticcheck": true,
+    // alias import 補管に必須
+    "completeUnimported": true,
+    "importShortcut": "Both",
     "analyses": {
       "unusedparams": true,
       "shadow": true,
