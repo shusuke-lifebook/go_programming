@@ -18,3 +18,4 @@
 - [cors](https://github.com/gin-contrib/cors)
 - [timeout](https://github.com/gin-contrib/timeout)
 - [zap](https://github.com/gin-contrib/zap)
+- [testify](https://github.com/stretchr/testify/)
