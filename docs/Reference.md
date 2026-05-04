@@ -19,3 +19,4 @@
 - [timeout](https://github.com/gin-contrib/timeout)
 - [zap](https://github.com/gin-contrib/zap)
 - [testify](https://github.com/stretchr/testify/)
+- [go-sqlmock](https://github.com/data-dog/go-sqlmock)
