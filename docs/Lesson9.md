@@ -599,4 +599,33 @@
   - **httptest.NewRecorder関数**でHTTPレスポンスを記録するためのオブジェクトを作成する
   - **gin.CreateTestContext関数**でリクエストやレスポンスを管理するgin.Context型の構造体を作成する
 
+  ```go
+  package controllers
+
+  import (
+    "net/http"
+    "net/http/httptest"
+    "testing"
+
+    "github.com/gin-gonic/gin"
+    "github.com/stretchr/testify/assert"
+  )
+
+  func TestHealthHandler(t *testing.T) {
+    w := httptest.NewRecorder()
+    request, _ := http.NewRequest("GET", "/health", nil)
+
+    ginContext, _ := gin.CreateTestContext(w)
+    ginContext.Request = request
+
+    Health(ginContext)
+
+    assert.Equal(t, 200, w.Code)
+    assert.JSONEq(t, `{"status":"ok"}`, w.Body.String())
+  }
+
+  ```
+
+### 9-4-2 アルバムのコントローラのテストを実行しよう
+
 ## 9-5 インテグレーションテストを実行しよう
