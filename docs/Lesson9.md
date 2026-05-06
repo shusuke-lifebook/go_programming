@@ -453,10 +453,150 @@
 ### 9-3-1 MySQLを使用したテストの実行
 - SQLiteでも十分なテストは可能。SQLiteとは異なる機能を使っている場合には、実際に運用するMySQLでテストを行いたいことがある。その際にはMySQLでテストできるように、**testcontainers**パッケージを利用して行う
 - **テスト用のMySQLをDockerコンテナで立ち上げる**
-- [testcontainers-go](https://github.com/testcontainers/testcontainers-go)
-- go get github.com/testcontainers/testcontainers-go
+  - [testcontainers-go](https://github.com/testcontainers/testcontainers-go)
+  - go get github.com/testcontainers/testcontainers-go
+- **MySQLでテストを実行する**
+  - go mod tidy
+  - go test -v ./app/models/...
+  ```go
+  package tester
+
+  import (
+    "context"
+    "fmt"
+    "log"
+    "net"
+    "time"
+
+    "github.com/stretchr/testify/suite"
+    "github.com/testcontainers/testcontainers-go"
+    "github.com/testcontainers/testcontainers-go/wait"
+
+    "go-api-arch-mvc-template/app/models"
+    "go-api-arch-mvc-template/configs"
+  )
+
+  func CheckPort(host string, port int) bool {
+    conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", host, port))
+    if conn != nil {
+      conn.Close()
+      return false
+    }
+    if err != nil {
+      return true
+    }
+    return false
+  }
+
+  func WaitForPort(host string, port int, timeout time.Duration) bool {
+    deadline := time.Now().Add(timeout)
+    for time.Now().Before(deadline) {
+      if CheckPort(host, port) {
+        return true
+      }
+      time.Sleep(1 * time.Second)
+    }
+    return false
+  }
+
+  type DBMySQLSuite struct {
+    suite.Suite
+    mySQLContainer testcontainers.Container
+    ctx            context.Context
+  }
+
+  func (suite *DBMySQLSuite) SetupTestContainers() (err error) {
+    WaitForPort(configs.Config.DBHost, configs.Config.DBPort, 10*time.Second)
+    suite.ctx = context.Background()
+    req := testcontainers.ContainerRequest{
+      Image: "mysql:8",
+      Env: map[string]string{
+        "MYSQL_DATABASE":             configs.Config.DBName,
+        "MYSQL_USER":                 configs.Config.DBUser,
+        "MYSQL_PASSWORD":             configs.Config.DBPassword,
+        "MYSQL_ALLOW_EMPTY_PASSWORD": "yes",
+      },
+      ExposedPorts: []string{"3306/tcp"},
+      WaitingFor:   wait.ForLog("port: 3306  MySQL Community Server - GPL."),
+    }
+
+    suite.mySQLContainer, err = testcontainers.GenericContainer(suite.ctx, testcontainers.GenericContainerRequest{
+      ContainerRequest: req,
+      Started:          true,
+    })
+
+    if err != nil {
+      log.Fatal(err.Error())
+    }
+
+    return nil
+  }
+
+  // func (suite *DBMySQLSuite) SetupSuite() {
+  // 	err := suite.SetupTestContainers()
+  // 	suite.Assert().Nil(err)
+
+  // 	err = models.SetDatabase(models.InstanceMySQL)
+  // 	suite.Assert().Nil(err)
+
+  // 	for _, model := range models.GetModels() {
+  // 		err := models.DB.AutoMigrate(model)
+  // 		suite.Assert().Nil(err)
+  // 	}
+  // }
+
+  func (suite *DBMySQLSuite) SetupSuite() {
+    // 1. コンテナ起動
+    err := suite.SetupTestContainers()
+    suite.Require().Nil(err)
+
+    // 2. コンテナの host / port を取得
+    port, err := suite.mySQLContainer.MappedPort(suite.ctx, "3306/tcp")
+    suite.Require().Nil(err)
+
+    host, err := suite.mySQLContainer.Host(suite.ctx)
+    suite.Require().Nil(err)
+
+    // 3. DSN を生成
+    dsn := fmt.Sprintf(
+      "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True",
+      configs.Config.DBUser,
+      configs.Config.DBPassword,
+      host,
+      port.Port(),
+      configs.Config.DBName,
+    )
+
+    // 4. DSN を直接渡して DB を初期化
+    err = models.SetDatabaseDSN(dsn)
+    suite.Require().Nil(err)
+
+    // 5. マイグレーション
+    for _, model := range models.GetModels() {
+      err := models.DB.AutoMigrate(model)
+      suite.Require().Nil(err)
+    }
+  }
+
+  func (suite *DBMySQLSuite) TearDownSuite() {
+    if suite.mySQLContainer == nil {
+      return
+    }
+    err := suite.mySQLContainer.Terminate(suite.ctx)
+    suite.Assert().Nil(err)
+  }
+
+  ```
 
 
 ## 9-4 コントローラのテストを実行しよう
+- コントローラについてもテストを作成して行こう
+- テスト用にHTTPリクエストを作成し、コントローラの処理が呼び出した結果が、想定したHTTPレスポンスであるかどうかテストするための方法について記載する
+
+### 9-4-1 ヘルスチェックのコントローラのテストを実行しよう
+- コントローラのテスト実行するには、**net/http/httptestパッケージ**を使用してHTTPのリクエストとレスポンスを確認する
+- ヘルスチェックについてテストを実施する。app/controllers/health_test.goを作成し、TestHealthHandler関数を定義します。
+  - **httptest.NewRecorder関数**でHTTPレスポンスを記録するためのオブジェクトを作成する
+  - **gin.CreateTestContext関数**でリクエストやレスポンスを管理するgin.Context型の構造体を作成する
 
 ## 9-5 インテグレーションテストを実行しよう
