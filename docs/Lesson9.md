@@ -453,6 +453,8 @@
 ### 9-3-1 MySQLを使用したテストの実行
 - SQLiteでも十分なテストは可能。SQLiteとは異なる機能を使っている場合には、実際に運用するMySQLでテストを行いたいことがある。その際にはMySQLでテストできるように、**testcontainers**パッケージを利用して行う
 - **テスト用のMySQLをDockerコンテナで立ち上げる**
+- [testcontainers-go](https://github.com/testcontainers/testcontainers-go)
+- go get github.com/testcontainers/testcontainers-go
 
 
 ## 9-4 コントローラのテストを実行しよう

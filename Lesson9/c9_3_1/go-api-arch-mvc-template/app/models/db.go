@@ -51,3 +51,12 @@ func SetDatabase(instance int) (err error) {
 	DB = db
 	return nil
 }
+
+func SetDatabaseDSN(dsn string) error {
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+	DB = db
+	return nil
+}
